@@ -1,39 +1,39 @@
 # Table of Contents
 
--   [About](#orge6d85ae)
--   [Installation](#org0d58dc7)
-    -   [Download from dockerhub](#org0871c5c)
-    -   [Build from chiselapp (fossil)](#org4a99f83)
-    -   [Build from github](#org8c45d96)
--   [Configuration options](#orgecb9c33)
-    -   [General options](#org0bd020f)
-    -   [Timezone](#org75667cf)
--   [Usage](#org86a6962)
--   [Source packages for developer-mode](#org2757cd7)
--   [CI/CD](#org24047fc)
--   [Maintenance](#orge8a6fd2)
-    -   [Log output](#org87c2f62)
-    -   [Shell access](#org7130e6b)
+-   [About](#orge8c93ae)
+-   [Installation](#org65747e1)
+    -   [Download from dockerhub](#orgc593f71)
+    -   [Build from chiselapp (fossil)](#orgdf6819f)
+    -   [Build from github](#org11576e1)
+-   [Configuration options](#org1188904)
+    -   [General options](#org37342f9)
+    -   [Timezone](#orga4ab847)
+-   [Usage](#org9870369)
+-   [Prepare source packages](#org88879db)
+-   [CI/CD](#org6c982aa)
+-   [Maintenance](#org79b2d34)
+    -   [Log output](#org7012852)
+    -   [Shell access](#org9478d74)
 
 
 
-<a id="orge6d85ae"></a>
+<a id="orge8c93ae"></a>
 
 # About
 
-This is [ubuntu base docker image](https://hub.docker.com/_/ubuntu) (version 20.04) using [s6-overlay](https://github.com/just-containers/s6-overlay) for buid tcl software.
+This is [ubuntu base docker image](https://hub.docker.com/_/ubuntu) (version 20.04) using [s6-overlay](https://github.com/just-containers/s6-overlay) for buid tcl software. The basic idea was taken from [tcl2020-build](https://github.com/tcl2020/tcl2020-build) .
 
 Tcl-build is self-hosting at <https://chiselapp.com/user/oupfiz5/repository/tcl-build>.
 
 If you are reading this on GitHub, then you are looking at a Git mirror of the self-hosting tcl-build repository.  The purpose of that mirror is to test and exercise Fossil's ability to export a Git mirror and using Github CI/CD  (Github Actions). Nobody much uses the GitHub mirror, except to verify that the mirror logic works. If you want to know more about tcl-build, visit the official self-hosting site linked above.
 
 
-<a id="org0d58dc7"></a>
+<a id="org65747e1"></a>
 
 # Installation
 
 
-<a id="org0871c5c"></a>
+<a id="orgc593f71"></a>
 
 ## Download from dockerhub
 
@@ -41,7 +41,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker pull oupfiz5/tcl-build:20.04
 
 
-<a id="org4a99f83"></a>
+<a id="orgdf6819f"></a>
 
 ## Build from chiselapp (fossil)
 
@@ -52,7 +52,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker build -t oupfiz5/tcl-build .
 
 
-<a id="org8c45d96"></a>
+<a id="org11576e1"></a>
 
 ## Build from github
 
@@ -61,12 +61,12 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker build -t oupfiz5/tcl-build .
 
 
-<a id="orgecb9c33"></a>
+<a id="org1188904"></a>
 
 # Configuration options
 
 
-<a id="org0bd020f"></a>
+<a id="org37342f9"></a>
 
 ## General options
 
@@ -98,7 +98,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 </table>
 
 
-<a id="org75667cf"></a>
+<a id="orga4ab847"></a>
 
 ## Timezone
 
@@ -111,7 +111,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
                /bin/bash
 
 
-<a id="org86a6962"></a>
+<a id="org9870369"></a>
 
 # Usage
 
@@ -131,28 +131,28 @@ Build Naviserver in tcl-build using a docker exec:
 Modify the source code of any package in the workspaces directory. Then you can use make, cmake, &#x2026; to rebuild the container with the changes.  Use the build container with your favorite IDE
 
 
-<a id="org2757cd7"></a>
+<a id="org88879db"></a>
 
-# Source packages for developer-mode
+# Prepare source packages
 
 Source packages are added to the Docker image using the `builds/build-all.sh` script.
 
 To add packages or features create a two shell scripts in `builds` directory.  One shell script will download the source package: `yourpackage-download.sh`. The other script will build the package: `yourpackage-build.sh`.  Add your new build script, `yourpackage-build.sh`, to `builds/all-build.sh`.
 
 
-<a id="org24047fc"></a>
+<a id="org6c982aa"></a>
 
 # CI/CD
 
 For  build and push docker images using  [Github Actions workflow](https://github.com/oupfiz5/build-tcl/blob/master/.github/workflows/on-push.yaml).
 
 
-<a id="orge8a6fd2"></a>
+<a id="org79b2d34"></a>
 
 # Maintenance
 
 
-<a id="org87c2f62"></a>
+<a id="org7012852"></a>
 
 ## Log output
 
@@ -164,7 +164,7 @@ For debugging and maintenance purposes you may want access the output log. If yo
            /bin/bash
 
 
-<a id="org7130e6b"></a>
+<a id="org9478d74"></a>
 
 ## Shell access
 
