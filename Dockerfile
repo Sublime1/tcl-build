@@ -1,5 +1,4 @@
 # * Base image
-#  FROM ubuntu:20.04
 FROM oupfiz5/ubuntu-s6:latest
 
 # * Arguments
@@ -31,17 +30,50 @@ COPY rootfs/ /
 ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-${FOSSIL_VERSION}.tar.gz /tmp/fossil-linux.tar.gz
 
 # * Run
-# RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8"
 RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
-    &&  apt-get update \
+    && apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install curl wget gnupg apt-utils tzdata bash git \
-    && apt-get -y install automake autoconf make gcc locales \
-    && apt-get -y install zlib1g-dev libreadline-dev libtool minizip openssl libssl-dev libpq-dev postgresql-client \
-    && apt-get -y install python3-pip python3-venv libzookeeper-mt-dev libboost-all-dev libuv1-dev swig3.0 libyajl-dev \
-    && apt-get -y install libgd-dev pkg-config gdb libcurl4-openssl-dev \
-    && apt-get -y install libmemcached-dev libxml2-dev libxslt-dev apache2-dev apache2 \
-    && apt-get -y install libgeos-dev libproj-dev libbsd-dev lsb-release \
+    && apt-get -y install \
+               apache2 \
+               apache2-dev \
+               apt-utils \
+               autoconf \
+               automake \
+               bash \
+               curl \
+               gcc \
+               gdb \
+               git \
+               gnupg \
+               libboost-all-dev \
+               libbsd-dev \
+               libcurl4-openssl-dev \
+               libgd-dev \
+               libgeos-dev \
+               libmemcached-dev \
+               libpq-dev \
+               libproj-dev \
+               libreadline-dev \
+               libssl-dev \
+               libtool \
+               libuv1-dev \
+               libxml2-dev \
+               libxslt-dev \
+               libyajl-dev \
+               libzookeeper-mt-dev \
+               locales \
+               lsb-release \
+               make \
+               minizip \
+               openssl \
+               pkg-config \
+               postgresql-client \
+               python3-pip \
+               python3-venv \
+               swig3.0 \
+               tzdata \
+               wget \
+               zlib1g-dev \
     && pip3 install "cmake==3.17.2" \
     && locale-gen en_US.UTF-8 \
     && update-locale LANG="en_US.UTF-8" \
