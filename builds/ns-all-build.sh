@@ -6,3 +6,4 @@ sh /builds/ns-build.sh
 sh /builds/ns-modules-build.sh
 sh /builds/ns-xotcl-build.sh
 sh /builds/ns-tdom-build.sh
+sh /builds/rl_json-build.sh
