@@ -1,6 +1,6 @@
 #!/bin/bash
 . /builds/common.sh
-. /builds/ns-env-vars.sh
+. /builds/env-vars.sh
 
 build_setup
 
@@ -14,7 +14,7 @@ mkdir -p /workspaces/logs
 > /workspaces/logs/${package_directory}.log
 echo "Running the autoconf configure in /workspaces/${package_directory}"
 cd /workspaces/${package_directory} || exit 1
-./configure --with-tcl=${ns_install_dir}/lib --prefix=${ns_install_dir} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
+./configure --with-tcl=${prefix}/lib --prefix=${prefix} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
 
 echo "Building Naviserver"
 # cut down on the output to stdout to make Travis-CI consoles faster

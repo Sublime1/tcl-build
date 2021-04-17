@@ -17,8 +17,8 @@ echo "Running the autoconf configure in /workspaces/${package_directory}"
 echo "Building ${package_directory}"
 > /workspaces/logs/${package_directory}.log
 ./configure --prefix=${prefix} \
-     --with-tcl=${with_tcl} \
-     --with-tclinclude=${with_tclinclude} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
+     --with-tcl=${prefix}/lib \
+     --with-tclinclude=${prefix}/include 2>&1 | tee -a /workspaces/logs/${package_directory}.log
 # cut down on the output to stdout to make Travis-CI consoles faster
 make
 make install 2>&1 | tee -a /workspaces/logs/${package_directory}.log

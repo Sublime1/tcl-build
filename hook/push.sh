@@ -1,3 +1,11 @@
 #!/bin/bash
-docker push oupfiz5/tcl-build:20.04
-docker push oupfiz5/tcl-build:latest
+set -a; source ../VERSION ; set +a;
+
+if [[ ${BRANCH} == 'dev' ]]; then
+    BRANCH='dev-'
+else
+    BRANCH=""
+fi
+
+docker push oupfiz5/tcl-build:${BRANCH}${VERSION:-undefine}
+docker push oupfiz5/tcl-build:${BRANCH}latest

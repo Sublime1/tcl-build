@@ -11,7 +11,7 @@ on:
       - rootfs/*
     branches:
       - master
-      # - dev
+      - dev
 
 jobs:
   build:
