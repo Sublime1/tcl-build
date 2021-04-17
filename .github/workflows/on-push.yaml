@@ -27,7 +27,7 @@ jobs:
 
       - name: Build images
         run: |
-          echo "::set-output name=BRANCH::${GITHUB_REF#refs/heads/}"
+          echo "::set-env name=BRANCH::$(echo ${GITHUB_REF#refs/heads/})"
           echo "Branch name is ${BRANCH}"
           # cd ${GITHUB_WORKSPACE}/hook
           # ./build.sh
