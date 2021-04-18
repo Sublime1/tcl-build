@@ -2,10 +2,10 @@
 set -a; source ../VERSION ; set +a;
 
 if [[ ${BRANCH} == 'dev' ]]; then
-    BRANCH='dev-'
+    TAG_PREFIX='dev-'
 else
-    BRANCH=""
+    TAG_PREFIX=''
 fi
 
-docker push oupfiz5/tcl-build:${BRANCH}${VERSION:-undefine}
-docker push oupfiz5/tcl-build:${BRANCH}latest
+docker push oupfiz5/tcl-build:${TAG_PREFIX}${VERSION:-undefine}
+docker push oupfiz5/tcl-build:${TAG_PREFIX}latest

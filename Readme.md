@@ -1,23 +1,23 @@
 # Table of Contents
 
--   [About](#orgae946d3)
--   [Installation](#org584fd1d)
-    -   [Download from dockerhub](#org81c1b04)
-    -   [Build from chiselapp (fossil)](#org79e6938)
-    -   [Build from github](#org4e354cd)
--   [Configuration options](#org860ea1e)
-    -   [General options](#org6be0105)
-    -   [Timezone](#orgaf14781)
--   [Usage](#org8471945)
--   [Prepare source packages](#orgf93aa3a)
--   [CI/CD](#orgce419b6)
--   [Maintenance](#org879bce1)
-    -   [Log output](#orgc3d2fed)
-    -   [Shell access](#org7cdd590)
+-   [About](#orga1847c3)
+-   [Installation](#org0604442)
+    -   [Download from dockerhub](#orge33493b)
+    -   [Build from chiselapp (fossil)](#orgbbe6d2e)
+    -   [Build from github](#orgba9c59f)
+-   [Configuration options](#org8393d78)
+    -   [General options](#org3cd52c0)
+    -   [Timezone](#org7199420)
+-   [Usage](#org4a846da)
+-   [Prepare source packages](#orgfd889ef)
+-   [CI/CD](#orgce66810)
+-   [Maintenance](#orgeed6dda)
+    -   [Log output](#org3a97f61)
+    -   [Shell access](#orgf12b14e)
 
 
 
-<a id="orgae946d3"></a>
+<a id="orga1847c3"></a>
 
 # About
 
@@ -28,12 +28,12 @@ Tcl-build is self-hosting at <https://chiselapp.com/user/oupfiz5/repository/tcl-
 If you are reading this on GitHub, then you are looking at a Git mirror of the self-hosting tcl-build repository.  The purpose of that mirror is to test and exercise Fossil's ability to export a Git mirror and using Github CI/CD  (Github Actions). Nobody much uses the GitHub mirror, except to verify that the mirror logic works. If you want to know more about tcl-build, visit the official self-hosting site linked above.
 
 
-<a id="org584fd1d"></a>
+<a id="org0604442"></a>
 
 # Installation
 
 
-<a id="org81c1b04"></a>
+<a id="orge33493b"></a>
 
 ## Download from dockerhub
 
@@ -41,7 +41,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker pull oupfiz5/tcl-build:20.04
 
 
-<a id="org79e6938"></a>
+<a id="orgbbe6d2e"></a>
 
 ## Build from chiselapp (fossil)
 
@@ -52,7 +52,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker build -t oupfiz5/tcl-build .
 
 
-<a id="org4e354cd"></a>
+<a id="orgba9c59f"></a>
 
 ## Build from github
 
@@ -61,12 +61,12 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker build -t oupfiz5/tcl-build .
 
 
-<a id="org860ea1e"></a>
+<a id="org8393d78"></a>
 
 # Configuration options
 
 
-<a id="org6be0105"></a>
+<a id="org3cd52c0"></a>
 
 ## General options
 
@@ -98,7 +98,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 </table>
 
 
-<a id="orgaf14781"></a>
+<a id="org7199420"></a>
 
 ## Timezone
 
@@ -111,7 +111,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
                /bin/bash
 
 
-<a id="org8471945"></a>
+<a id="org4a846da"></a>
 
 # Usage
 
@@ -131,7 +131,7 @@ Build Naviserver in tcl-build using a docker exec:
 Modify the source code of any package in the workspaces directory. Then you can use make, cmake, &#x2026; to rebuild the container with the changes.  Use the build container with your favorite IDE
 
 
-<a id="orgf93aa3a"></a>
+<a id="orgfd889ef"></a>
 
 # Prepare source packages
 
@@ -140,19 +140,19 @@ Source packages are added to the Docker image using the `builds/build-all.sh` sc
 To add packages or features create a two shell scripts in `builds` directory.  One shell script will download the source package: `yourpackage-download.sh`. The other script will build the package: `yourpackage-build.sh`.  Add your new build script, `yourpackage-build.sh`, to `builds/all-build.sh`.
 
 
-<a id="orgce419b6"></a>
+<a id="orgce66810"></a>
 
 # CI/CD
 
 For  build and push docker images using  [Github Actions workflow](https://github.com/oupfiz5/build-tcl/blob/master/.github/workflows/on-push.yaml).
 
 
-<a id="org879bce1"></a>
+<a id="orgeed6dda"></a>
 
 # Maintenance
 
 
-<a id="orgc3d2fed"></a>
+<a id="org3a97f61"></a>
 
 ## Log output
 
@@ -164,7 +164,7 @@ For debugging and maintenance purposes you may want access the output log. If yo
            /bin/bash
 
 
-<a id="org7cdd590"></a>
+<a id="orgf12b14e"></a>
 
 ## Shell access
 
