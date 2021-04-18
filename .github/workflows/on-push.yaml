@@ -27,13 +27,14 @@ jobs:
 
       - name: Build images
         run: |
-          BRANCH=${GITHUB_REF#refs/heads/}
+          BRANCH="${GITHUB_REF#refs/heads/}"
           echo "Branch name is ${BRANCH}"
           cd ${GITHUB_WORKSPACE}/hook
           BRANCH=${BRANCH} ./build.sh
 
       - name: Push images
         run: |
-          echo ""
-          # cd ${GITHUB_WORKSPACE}/hook
-          # ./push.sh
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "Branch name is ${BRANCH}"
+          cd ${GITHUB_WORKSPACE}/hook
+          BRANCH=${BRANCH} ./push.sh
