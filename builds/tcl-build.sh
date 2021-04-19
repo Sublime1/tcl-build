@@ -1,12 +1,12 @@
 #!/bin/bash
 . /builds/common.sh
-. /builds/ns-env-vars.sh
+. /builds/env-vars.sh
 
 build_setup
 
-package_directory="tcl${tcl_version}"
+package_directory="tcl${TCL_VERSION}"
 if [ ! -d /workspaces/${package_directory} ]; then
-    cd /workspaces && sh /builds/ns-tcl-download.sh
+    cd /workspaces && sh /builds/tcl-download.sh
     tar xfz ${package_directory}-src.tar.gz
 fi
 
@@ -19,15 +19,15 @@ mkdir -p /workspaces/logs
 > /workspaces/logs/${package_directory}.log
 echo "Running the autoconf configure in /workspaces/tcl/unix"
 cd /workspaces/${package_directory}/unix || exit 1
-./configure --enable-threads --prefix=${ns_install_dir} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
+./configure --enable-threads --prefix=${PREFIX} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
 make 2>&1 | tee -a /workspaces/logs/${package_directory}.log
 make install
 
 # Make sure, we have a tclsh in ns/bin
-if [ -f ${ns_install_dir}/bin/tclsh ] ; then
-    rm ${ns_install_dir}/bin/tclsh
+if [ -f ${PREFIX}/bin/tclsh ] ; then
+    rm ${PREFIX}/bin/tclsh
 fi
 
-ln -sf ${ns_install_dir}/bin/tclsh${tcl_version%.*} ${ns_install_dir}/bin/tclsh
+ln -sf ${PREFIX}/bin/tclsh${TCL_VERSION%.*} ${PREFIX}/bin/tclsh
 
 build_cleanup

@@ -1,6 +1,6 @@
 #!/bin/bash
 export ns_install_dir="/usr/local/ns"
-export ns_version="4.99.20"
+export ns_version="4.99.21"
 export ns_modules_version="${ns_version}"
 export tdom_version="0.9.1"
 export tcl_version="8.6.11"

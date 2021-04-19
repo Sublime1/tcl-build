@@ -2,8 +2,18 @@
 FROM oupfiz5/ubuntu-s6:latest
 
 # * Arguments
-ARG BUILD_DATE
-ARG FOSSIL_VERSION=2.14
+ARG BUILD_DATE \
+    VERSION \
+    FOSSIL_VERSION=2.15.1
+
+# ** Environments
+ENV NS_VERSION=${NS_VERSION} \
+    NS_MODULES_VERSION=${NS_MODULES_VERSION} \
+    RL_JSON_VERSION=${RL_JSON_VERSION} \
+    TCL_VERSION=${TCL_VERSION} \
+    TCLLIB_VERSION=${TCLLIB_VERSION} \
+    XOTCL_VERSION=${XOTCL_VERSION} \
+    TDOM_VERSION=${TDOM_VERSION}
 
 # * Labels
 LABEL \
@@ -13,13 +23,14 @@ LABEL \
     org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/tcl-build/home" \
     org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/tcl-build/wiki" \
     org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/tcl-build/brlist" \
-    org.opencontainers.image.version="0.0.1d" \
+    org.opencontainers.image.version="0.0.2d" \
     org.opencontainers.image.revision="" \
     org.opencontainers.image.vendor="" \
     org.opencontainers.image.licenses="" \
     org.opencontainers.image.ref.name="" \
     org.opencontainers.image.title="Ubuntu image for build tcl packages" \
-    org.opencontainers.image.description="Ubuntu image for build tcl packages"
+    org.opencontainers.image.description="Ubuntu image for build tcl packages" \
+    org.opencontainers.tclbuild.version="${VERSION}"
 
 # * Environment
 

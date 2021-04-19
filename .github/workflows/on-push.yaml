@@ -11,7 +11,7 @@ on:
       - rootfs/*
     branches:
       - master
-      # - dev
+      - dev
 
 jobs:
   build:
@@ -27,10 +27,14 @@ jobs:
 
       - name: Build images
         run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "Branch name is ${BRANCH}"
           cd ${GITHUB_WORKSPACE}/hook
-          ./build.sh
+          BRANCH=${BRANCH} ./build.sh
 
       - name: Push images
         run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "Branch name is ${BRANCH}"
           cd ${GITHUB_WORKSPACE}/hook
-          ./push.sh
+          BRANCH=${BRANCH} ./push.sh
