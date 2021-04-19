@@ -1,30 +1,30 @@
 # Table of Contents
 
--   [About](#orgc1d51d7)
--   [Installation](#org776d19e)
-    -   [Download from dockerhub](#org3d71d75)
-    -   [Build from chiselapp (fossil)](#orgae09726)
-    -   [Build from github](#org6328f40)
-    -   [Configuration](#orgab59de9)
-        -   [Build arguments](#orgbdc66a7)
-        -   [Example of build](#orgf4f3d92)
--   [Configuration options](#orgd2e6f01)
-    -   [General options](#org7e2bcfb)
-    -   [Timezone](#orge3dda62)
--   [Applications](#orgfa7d23c)
-    -   [Configuration](#org565e973)
--   [Usage](#orgc989271)
-    -   [Builder](#org7718aa7)
-    -   [Build applications](#org41a0c92)
--   [Prepare source packages](#orgca9748d)
--   [CI/CD](#org2788114)
--   [Maintenance](#org96187f6)
-    -   [Log output](#orgaa75ed4)
-    -   [Shell access](#orgbd65355)
+-   [About](#org3d315fb)
+-   [Installation](#orgd78a7c7)
+    -   [Download from dockerhub](#org18c9bf1)
+    -   [Build from chiselapp (fossil)](#orgfeff292)
+    -   [Build from github](#orgadd3bbf)
+    -   [Configuration](#orgc95da74)
+        -   [Build arguments](#orgea9149f)
+        -   [Example of build](#orgd2f2343)
+-   [Configuration options](#org1856e04)
+    -   [General options](#org4f97bb2)
+    -   [Timezone](#orga4dfa1b)
+-   [Applications](#org7e53352)
+    -   [Configuration](#org8cd1d18)
+-   [Usage](#orgf93b6f0)
+    -   [Builder](#orge6bc007)
+    -   [Build applications](#org7f3c371)
+-   [Prepare source packages](#org7109ad3)
+-   [CI/CD](#org4fc94f9)
+-   [Maintenance](#org6e79ed6)
+    -   [Log output](#orgddf7625)
+    -   [Shell access](#org14c3db2)
 
 
 
-<a id="orgc1d51d7"></a>
+<a id="org3d315fb"></a>
 
 # About
 
@@ -35,12 +35,12 @@ Tcl-build is self-hosting at <https://chiselapp.com/user/oupfiz5/repository/tcl-
 If you are reading this on GitHub, then you are looking at a Git mirror of the self-hosting tcl-build repository.  The purpose of that mirror is to test and exercise Fossil's ability to export a Git mirror and using Github CI/CD  (Github Actions). Nobody much uses the GitHub mirror, except to verify that the mirror logic works. If you want to know more about tcl-build, visit the official self-hosting site linked above.
 
 
-<a id="org776d19e"></a>
+<a id="orgd78a7c7"></a>
 
 # Installation
 
 
-<a id="org3d71d75"></a>
+<a id="org18c9bf1"></a>
 
 ## Download from dockerhub
 
@@ -48,7 +48,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker pull oupfiz5/tcl-build:20.04
 
 
-<a id="orgae09726"></a>
+<a id="orgfeff292"></a>
 
 ## Build from chiselapp (fossil)
 
@@ -59,7 +59,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker build -t oupfiz5/tcl-build .
 
 
-<a id="org6328f40"></a>
+<a id="orgadd3bbf"></a>
 
 ## Build from github
 
@@ -68,12 +68,12 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker build -t oupfiz5/tcl-build .
 
 
-<a id="orgab59de9"></a>
+<a id="orgc95da74"></a>
 
 ## Configuration
 
 
-<a id="orgbdc66a7"></a>
+<a id="orgea9149f"></a>
 
 ### Build arguments
 
@@ -121,7 +121,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 </table>
 
 
-<a id="orgf4f3d92"></a>
+<a id="orgd2f2343"></a>
 
 ### Example of build
 
@@ -135,14 +135,14 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
             .
 
 
-<a id="orgd2e6f01"></a>
+<a id="org1856e04"></a>
 
 # Configuration options
 
 For configuration is using environment variables.
 
 
-<a id="org7e2bcfb"></a>
+<a id="org4f97bb2"></a>
 
 ## General options
 
@@ -174,7 +174,7 @@ For configuration is using environment variables.
 </table>
 
 
-<a id="orge3dda62"></a>
+<a id="orga4dfa1b"></a>
 
 ## Timezone
 
@@ -189,7 +189,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
         oupfiz5/tcl-build:latest
 
 
-<a id="orgfa7d23c"></a>
+<a id="org7e53352"></a>
 
 # Applications
 
@@ -203,7 +203,7 @@ The docker support builds for  the following applications:
 -   xotcl
 
 
-<a id="org565e973"></a>
+<a id="org8cd1d18"></a>
 
 ## Configuration
 
@@ -293,12 +293,12 @@ For configuration is using docker environment variable and/or `builds/env-vars.s
 </table>
 
 
-<a id="orgc989271"></a>
+<a id="orgf93b6f0"></a>
 
 # Usage
 
 
-<a id="org7718aa7"></a>
+<a id="orge6bc007"></a>
 
 ## Builder
 
@@ -312,7 +312,7 @@ Run the build container in the background with Docker:
         oupfiz5/tcl-build:latest
 
 
-<a id="org41a0c92"></a>
+<a id="org7f3c371"></a>
 
 ## Build applications
 
@@ -330,7 +330,7 @@ Build any applications with version customization in tcl-build using `docker exe
 Modify the source code of any package in the workspaces directory. Then you can use make, cmake, &#x2026; to rebuild the container with the changes.  Use the build container with your favorite IDE.
 
 
-<a id="orgca9748d"></a>
+<a id="org7109ad3"></a>
 
 # Prepare source packages
 
@@ -339,19 +339,19 @@ Source packages are added to the Docker image using the `builds/build-all.sh` sc
 To add packages or features create a two shell scripts in `builds` directory.  One shell script will download the source package: `yourpackage-download.sh`. The other script will build the package: `yourpackage-build.sh`.  Add your new build script, `yourpackage-build.sh`, to `builds/all-build.sh`.
 
 
-<a id="org2788114"></a>
+<a id="org4fc94f9"></a>
 
 # CI/CD
 
 For  build and push docker images using  [Github Actions workflow](https://github.com/oupfiz5/build-tcl/blob/master/.github/workflows/on-push.yaml).
 
 
-<a id="org96187f6"></a>
+<a id="org6e79ed6"></a>
 
 # Maintenance
 
 
-<a id="orgaa75ed4"></a>
+<a id="orgddf7625"></a>
 
 ## Log output
 
@@ -363,7 +363,7 @@ For debugging and maintenance purposes you may want access the output log. If yo
            /bin/bash
 
 
-<a id="orgbd65355"></a>
+<a id="org14c3db2"></a>
 
 ## Shell access
 
