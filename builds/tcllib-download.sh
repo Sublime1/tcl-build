@@ -1,4 +1,4 @@
 #!/bin/bash
-if [ ! -f tcllib-${tcllib_version}.tar.bz2 ] ; then
-    wget ${wget_options} https://downloads.sourceforge.net/sourceforge/tcllib/tcllib-${tcllib_version}.tar.bz2
+if [ ! -f tcllib-${TCLLIB_VERSION}.tar.bz2 ] ; then
+    wget ${WGET_OPTIONS} https://downloads.sourceforge.net/sourceforge/tcllib/tcllib-${TCLLIB_VERSION}.tar.bz2
 fi

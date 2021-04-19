@@ -4,7 +4,7 @@
 
 build_setup
 
-package_directory="tcl${tcl_version}"
+package_directory="tcl${TCL_VERSION}"
 if [ ! -d /workspaces/${package_directory} ]; then
     cd /workspaces && sh /builds/tcl-download.sh
     tar xfz ${package_directory}-src.tar.gz
@@ -19,15 +19,15 @@ mkdir -p /workspaces/logs
 > /workspaces/logs/${package_directory}.log
 echo "Running the autoconf configure in /workspaces/tcl/unix"
 cd /workspaces/${package_directory}/unix || exit 1
-./configure --enable-threads --prefix=${prefix} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
+./configure --enable-threads --prefix=${PREFIX} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
 make 2>&1 | tee -a /workspaces/logs/${package_directory}.log
 make install
 
 # Make sure, we have a tclsh in ns/bin
-if [ -f ${prefix}/bin/tclsh ] ; then
-    rm ${prefix}/bin/tclsh
+if [ -f ${PREFIX}/bin/tclsh ] ; then
+    rm ${PREFIX}/bin/tclsh
 fi
 
-ln -sf ${prefix}/bin/tclsh${tcl_version%.*} ${prefix}/bin/tclsh
+ln -sf ${PREFIX}/bin/tclsh${TCL_VERSION%.*} ${PREFIX}/bin/tclsh
 
 build_cleanup

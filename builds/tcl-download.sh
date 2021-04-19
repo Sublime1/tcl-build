@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ ! -f tcl${tcl_version}-src.tar.gz ] ; then
-    echo wget ${wget_options} https://downloads.sourceforge.net/sourceforge/tcl/tcl${tcl_version}-src.tar.gz
-    wget ${wget_options} https://downloads.sourceforge.net/sourceforge/tcl/tcl${tcl_version}-src.tar.gz
+if [ ! -f tcl${TCL_VERSION}-src.tar.gz ] ; then
+    echo wget ${WGET_OPTIONS} https://downloads.sourceforge.net/sourceforge/tcl/tcl${TCL_VERSION}-src.tar.gz
+    wget ${WGET_OPTIONS} https://downloads.sourceforge.net/sourceforge/tcl/tcl${TCL_VERSION}-src.tar.gz
 fi

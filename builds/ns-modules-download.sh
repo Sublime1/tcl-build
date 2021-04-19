@@ -1,4 +1,4 @@
 #!/bin/bash
-if [ ! -f naviserver-${ns_modules_version}-modules.tar.gz ] ; then
-    wget ${wget_options} https://downloads.sourceforge.net/sourceforge/naviserver/naviserver-${ns_modules_version}-modules.tar.gz
+if [ ! -f naviserver-${NS_MODULES_VERSION}-modules.tar.gz ] ; then
+    wget ${WGET_OPTIONS} https://downloads.sourceforge.net/sourceforge/naviserver/naviserver-${NS_MODULES_VERSION}-modules.tar.gz
 fi

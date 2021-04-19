@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ ! -f nsf${xotcl_version}.tar.gz ] ; then
-    echo wget ${wget_options} https://downloads.sourceforge.net/sourceforge/next-scripting/nsf${xotcl_version}.tar.gz
-    wget ${wget_options} https://downloads.sourceforge.net/sourceforge/next-scripting/nsf${xotcl_version}.tar.gz
+if [ ! -f nsf${XOTCL_VERSION}.tar.gz ] ; then
+    echo wget ${WGET_OPTIONS} https://downloads.sourceforge.net/sourceforge/next-scripting/nsf${XOTCL_VERSION}.tar.gz
+    wget ${WGET_OPTIONS} https://downloads.sourceforge.net/sourceforge/next-scripting/nsf${XOTCL_VERSION}.tar.gz
 fi
