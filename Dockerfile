@@ -37,6 +37,9 @@ LABEL \
 # * Copy
 COPY rootfs/ /
 
+# * Copy builds scripts
+COPY builds /builds
+
 # * Add
 ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-${FOSSIL_VERSION}.tar.gz /tmp/fossil-linux.tar.gz
 
