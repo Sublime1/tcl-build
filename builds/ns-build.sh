@@ -14,7 +14,8 @@ mkdir -p /workspaces/logs
 > /workspaces/logs/${package_directory}.log
 echo "Running the autoconf configure in /workspaces/${package_directory}"
 cd /workspaces/${package_directory} || exit 1
-./configure --with-tcl=${PREFIX}/lib --prefix=${PREFIX} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
+./configure --enable-threads --with-tcl=${PREFIX}/lib --prefix=${PREFIX} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
+# ./configure --with-tcl=${PREFIX}/lib --prefix=${PREFIX} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
 
 echo "Building Naviserver"
 # cut down on the output to stdout to make Travis-CI consoles faster

@@ -19,7 +19,8 @@ mkdir -p /workspaces/logs
 > /workspaces/logs/${package_directory}.log
 echo "Running the autoconf configure in /workspaces/tcl/unix"
 cd /workspaces/${package_directory}/unix || exit 1
-./configure --enable-threads --prefix=${PREFIX} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
+./configure --enable-threads --prefix=${PREFIX} 2>&1 | tee -a
+/workspaces/logs/${package_directory}.log
 make 2>&1 | tee -a /workspaces/logs/${package_directory}.log
 make install
 
