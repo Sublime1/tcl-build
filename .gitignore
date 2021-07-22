@@ -1,4 +1,4 @@
 .fslckout
 .projectile
 /workspaces/*
-/.fossil-settings/*
+.fossil-settings/*

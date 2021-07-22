@@ -2,20 +2,33 @@ name: Build and push docker images
 
 on:
   push:
-    paths:
-      - .github/.trigger_on_push
-      - .github/workflows/on-push.yaml
-      - Dockerfile
-      - builds/*
-      - hook/*
-      - rootfs/*
     branches:
       - master
-      - dev
+      - main
+    paths:
+      - '.github/workflows/*'
+      - '.github/*'
+      - 'src/Dockerfile'
+      - 'src/rootfs/*'
+      - 'src/hook/*'
+      - 'src/*.sh'
+      - 'tests/**'
+  pull_request:
+    branches:
+      - master
+      - main
+    paths:
+      - '.github/workflows/*'
+      - '.github/*'
+      - 'src/Dockerfile'
+      - 'src/rootfs/*'
+      - 'src/hook/*'
+      - 'src/*.sh'
+      - 'tests/**'
 
 jobs:
   build:
-    name: Build and push dockerhub
+    name: Build and push image to dockerhub
     runs-on: ubuntu-latest
     steps:
       - name: Repo checkout
@@ -27,14 +40,10 @@ jobs:
 
       - name: Build images
         run: |
-          BRANCH="${GITHUB_REF#refs/heads/}"
-          echo "Branch name is ${BRANCH}"
-          cd ${GITHUB_WORKSPACE}/hook
-          BRANCH=${BRANCH} ./build.sh
+          cd ${GITHUB_WORKSPACE}/src/hook
+          ./build.sh
 
       - name: Push images
         run: |
-          BRANCH="${GITHUB_REF#refs/heads/}"
-          echo "Branch name is ${BRANCH}"
-          cd ${GITHUB_WORKSPACE}/hook
-          BRANCH=${BRANCH} ./push.sh
+          cd ${GITHUB_WORKSPACE}/src/hook
+          ./push.sh
