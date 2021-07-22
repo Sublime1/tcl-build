@@ -36,9 +36,6 @@ LABEL \
 
 # * Environment
 
-# * Copy
-COPY rootfs/ /
-
 # * Copy builds scripts
 COPY builds /builds
 
