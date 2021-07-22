@@ -24,7 +24,7 @@ setup() {
 
 @test "Build all" {
     sleep 5
-    run docker exec -it \
+    run docker exec \
         "${CONTAINER_NAME}" \
         bash /builds/all-build.sh
     assert_success
