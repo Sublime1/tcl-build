@@ -49,40 +49,6 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 - [[#maintenance][Maintenance]]
   - [[#log-output][Log output]]
   - [[#shell-access][Shell access]]
-- [[#code][Code]]
-  - [[#version][VERSION]]
-  - [[#fossil-settingscrlf-glob][../.fossil-settings/crlf-glob]]
-  - [[#fossil-settingscrlf-globno-warn][../.fossil-settings/crlf-glob.no-warn]]
-  - [[#fossil-settingsignore-glob][../.fossil-settings/ignore-glob]]
-  - [[#fossil-settingsignore-globno-warn][../.fossil-settings/ignore-glob.no-warn]]
-  - [[#githubworkflowson-pushyaml][../.github/workflows/on-push.yaml]]
-  - [[#githubworkflowstestyaml][../.github/workflows/test.yaml]]
-  - [[#githubtrigger_on_push][../.github/.trigger_on_push]]
-  - [[#gitignore][../.gitignore]]
-  - [[#dockerfile][Dockerfile]]
-  - [[#hookbuildsh][hook/build.sh]]
-  - [[#hookpushsh][hook/push.sh]]
-  - [[#buildscommonsh][builds/common.sh]]
-  - [[#buildsall-buildsh][builds/all-build.sh]]
-  - [[#buildsenv-varssh][builds/env-vars.sh]]
-  - [[#buildsns-buildsh][builds/ns-build.sh]]
-  - [[#buildsns-downloadsh][builds/ns-download.sh]]
-  - [[#buildsns-modules-downloadsh][builds/ns-modules-download.sh]]
-  - [[#buildsns-modules-build-nsdbpgsh][builds/ns-modules-build-nsdbpg.sh]]
-  - [[#buildsns-modules-build-nsstatssh][builds/ns-modules-build-nsstats.sh]]
-  - [[#buildsns-modules-build-nsconfsh][builds/ns-modules-build-nsconf.sh]]
-  - [[#buildstcl-buildsh][builds/tcl-build.sh]]
-  - [[#buildstcl-downloadsh][builds/tcl-download.sh]]
-  - [[#buildstcllib-buildsh][builds/tcllib-build.sh]]
-  - [[#buildstcllib-downloadsh][builds/tcllib-download.sh]]
-  - [[#buildsthread-buildsh][builds/thread-build.sh]]
-  - [[#buildsthread-downloadsh][builds/thread-download.sh]]
-  - [[#buildstdom-buildsh][builds/tdom-build.sh]]
-  - [[#buildstdom-downloadsh][builds/tdom-download.sh]]
-  - [[#buildsxotcl-buildsh][builds/xotcl-build.sh]]
-  - [[#buildsxotcl-downloadsh][builds/xotcl-download.sh]]
-  - [[#buildsrl_json-buildsh][builds/rl_json-build.sh]]
-  - [[#buildsrl_json-downloadsh][builds/rl_json-download.sh]]
 
 * Prerequisite
 :PROPERTIES:
@@ -320,7 +286,7 @@ docker run -it --rm \
 #+begin_example
 docker exec -it tcl-build /bin/bash
 #+end_example
-* Code :code:
+* Code :code:noexport:
 :PROPERTIES:
 :CUSTOM_ID: code
 :END:
