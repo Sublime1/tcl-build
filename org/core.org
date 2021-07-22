@@ -548,9 +548,6 @@ docker exec -it tcl-build /bin/bash
 
   # * Environment
 
-  # * Copy
-  COPY rootfs/ /
-
   # * Copy builds scripts
   COPY builds /builds
 
