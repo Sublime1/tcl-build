@@ -465,7 +465,7 @@ docker exec -it tcl-build /bin/bash
             --build-arg S6_UBUNTU_VERSION="${S6_UBUNTU_VERSION}" \
             -t "${IMAGE}" \
             -t oupfiz5/tcl-build:latest \
-            -f ../Dockerfile \
+            -f ./Dockerfile \
             .
 
         - name: Check docker image (dockle)
@@ -479,6 +479,12 @@ docker exec -it tcl-build /bin/bash
             cd ${GITHUB_WORKSPACE}/tests
             export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
             .bats-battery/bats-core/bin/bats 04.container_check.bats
+
+        - name: Check builds
+          run: |
+            cd ${GITHUB_WORKSPACE}/tests
+            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+            .bats-battery/bats-core/bin/bats 05.builds_check.bats
 #+end_src
 
 ** ../.github/.trigger_on_push :code:
@@ -541,9 +547,6 @@ docker exec -it tcl-build /bin/bash
       org.opencontainers.tclbuild.version="${VERSION}"
 
   # * Environment
-
-  # * Copy
-  COPY rootfs/ /
 
   # * Copy builds scripts
   COPY builds /builds
@@ -1353,6 +1356,7 @@ load '.bats-battery/bats-support/load.bash'
   }
 
   @test "Remove container" {
+      skip
       run docker container rm "${CONTAINER_NAME}" || true
       assert_success
   }
@@ -1369,7 +1373,8 @@ load '.bats-battery/bats-support/load.bash'
   }
 
   @test "Build all" {
-      run docker exec -it \
+      sleep 5
+      run docker exec \
           "${CONTAINER_NAME}" \
           bash /builds/all-build.sh
       assert_success

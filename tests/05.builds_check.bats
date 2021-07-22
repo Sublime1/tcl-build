@@ -7,6 +7,7 @@ setup() {
 }
 
 @test "Remove container" {
+    skip
     run docker container rm "${CONTAINER_NAME}" || true
     assert_success
 }
@@ -23,7 +24,8 @@ setup() {
 }
 
 @test "Build all" {
-    run docker exec -it \
+    sleep 5
+    run docker exec \
         "${CONTAINER_NAME}" \
         bash /builds/all-build.sh
     assert_success
