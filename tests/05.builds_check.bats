@@ -23,6 +23,7 @@ setup() {
 }
 
 @test "Build all" {
+    sleep 5
     run docker exec -it \
         "${CONTAINER_NAME}" \
         bash /builds/all-build.sh
