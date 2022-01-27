@@ -295,7 +295,7 @@ docker exec -it tcl-build /bin/bash
 :CUSTOM_ID: version
 :END:
 #+begin_src sh :shebang ""
-  VERSION=21.07
+  VERSION=22.01
   S6_UBUNTU_VERSION=20.04
 #+end_src
 ** ../.fossil-settings/crlf-glob
