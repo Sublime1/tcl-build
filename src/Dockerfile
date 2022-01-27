@@ -1,11 +1,11 @@
 # * Base image
-ARG S6_UBUNTU_VERSION=20.04
-FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_VERSION}
+ARG S6_UBUNTU_TAG='20.04-3.0.0.0-1'
+FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
 
 # * Arguments
 ARG BUILD_DATE \
     VERSION \
-    FOSSIL_VERSION=2.16
+    FOSSIL_VERSION=2.17
 
 # ** Environments
 ENV NS_VERSION=${NS_VERSION} \
@@ -25,7 +25,7 @@ LABEL \
     org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/tcl-build/home" \
     org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/tcl-build/wiki" \
     org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/tcl-build/brlist" \
-    org.opencontainers.image.version="0.0.2d" \
+    org.opencontainers.image.version="0.0.3d" \
     org.opencontainers.image.revision="" \
     org.opencontainers.image.vendor="" \
     org.opencontainers.image.licenses="" \
