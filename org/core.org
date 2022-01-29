@@ -491,7 +491,7 @@ docker exec -it tcl-build /bin/bash
 :CUSTOM_ID: ----github--trigger-on-push
 :END:
 #+begin_src yaml :shebang ""
-  Trigger: 3
+  Trigger: 4
 #+end_src
 ** ../.gitignore :code:
 :PROPERTIES:
