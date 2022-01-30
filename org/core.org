@@ -290,13 +290,13 @@ docker exec -it tcl-build /bin/bash
 :PROPERTIES:
 :CUSTOM_ID: code
 :END:
-** VERSION :code:
+** VERSIONS :code:
 :PROPERTIES:
-:CUSTOM_ID: version
+:CUSTOM_ID: versions
 :END:
 #+begin_src sh :shebang ""
-  VERSION='22.01'
-  S6_UBUNTU_TAG='20.04-3.0.0.0-1'
+  S6_UBUNTU_TAG='20.04-3.0.0.2'
+  TCL_BUILD_IMAGE_TAG='22.01'
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
@@ -352,6 +352,7 @@ docker exec -it tcl-build /bin/bash
         - 'src/rootfs/*'
         - 'src/hook/*'
         - 'src/*.sh'
+        - 'src/VERSIONS'
         - 'tests/**'
     pull_request:
       branches:
@@ -365,6 +366,7 @@ docker exec -it tcl-build /bin/bash
         - 'src/hook/*'
         - 'src/*.sh'
         - 'tests/**'
+        - 'src/VERSIONS'
 
   jobs:
     build:
@@ -407,6 +409,7 @@ docker exec -it tcl-build /bin/bash
         - 'src/hook/*'
         - 'src/builds/*'
         - 'src/*.sh'
+        - 'src/VERSIONS'
         - 'tests/**'
       branches-ignore:
         - 'master'
@@ -456,16 +459,9 @@ docker exec -it tcl-build /bin/bash
 
         - name: Build image
           run: |
-            cd ${GITHUB_WORKSPACE}/src
-            set -a; source VERSION ; set +a;
             export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-            docker build \
-            --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-            --build-arg VERSION="${VERSION}" \
-            --build-arg S6_UBUNTU_TAG="${S6_UBUNTU_TAG}" \
-            -t "${IMAGE}" \
-            -f ./Dockerfile \
-            .
+            cd ${GITHUB_WORKSPACE}/src/hook
+            ./build.sh
 
         - name: Check docker image (dockle)
           run: |
@@ -510,7 +506,7 @@ docker exec -it tcl-build /bin/bash
 :END:
 #+begin_src sh :shebang ""
   # * Base image
-  ARG S6_UBUNTU_TAG='20.04-3.0.0.0-1'
+  ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
   FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
 
   # * Arguments
@@ -619,9 +615,9 @@ docker exec -it tcl-build /bin/bash
 :END:
 #+begin_src sh  :results output pp :noweb strip-export :dir ../src/hook
   # shellcheck disable=SC1091
-  set -a; source ../VERSION ; set +a;
+  set -a; source ../VERSIONS ; set +a;
 
-  IMAGE="${IMAGE:-oupfiz5/tcl-build:${VERSION}}"
+  IMAGE="${IMAGE:-oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG}}"
 
   docker build \
          --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
@@ -638,9 +634,9 @@ docker exec -it tcl-build /bin/bash
 :END:
 #+begin_src sh
   # shellcheck disable=SC1091
-  set -a; source ../VERSION ; set +a;
+  set -a; source ../VERSIONS ; set +a;
 
-  IMAGE="${IMAGE:-oupfiz5/tcl-build:${VERSION}}"
+  IMAGE="${IMAGE:-oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG}}"
 
   docker push "${IMAGE}"
 #+end_src
@@ -1209,7 +1205,7 @@ load '.bats-battery/bats-support/load.bash'
   }
 
   @test "Check VERSION file" {
-        run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSION
+        run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSIONS
         assert_success
   }
 

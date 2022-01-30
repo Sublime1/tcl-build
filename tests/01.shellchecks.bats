@@ -21,6 +21,6 @@ setup() {
 }
 
 @test "Check VERSION file" {
-      run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSION
+      run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSIONS
       assert_success
 }
