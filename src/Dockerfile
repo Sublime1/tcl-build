@@ -1,5 +1,5 @@
 # * Base image
-ARG S6_UBUNTU_TAG='20.04-3.0.0.0-1'
+ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
 FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
 
 # * Arguments
