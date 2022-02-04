@@ -456,37 +456,37 @@ docker exec -it tcl-build /bin/bash
         - name: Repo checkout
           uses: actions/checkout@v2
 
-          - name: Check shell files (shellcheck)
-            run: |
-              sudo apt-get update -y
-              sudo apt-get install shellcheck
-              cd ${GITHUB_WORKSPACE}/tests
-              .bats-battery/bats-core/bin/bats 01.shellchecks.bats
+        - name: Check shell files (shellcheck)
+          run: |
+            sudo apt-get update -y
+            sudo apt-get install shellcheck
+            cd ${GITHUB_WORKSPACE}/tests
+            .bats-battery/bats-core/bin/bats 01.shellchecks.bats
 
-          - name: Check Dockerfile (hadolint)
-            run: |
-              cd ${GITHUB_WORKSPACE}/tests
-              .bats-battery/bats-core/bin/bats 02.dockerfile_check.bats
+        - name: Check Dockerfile (hadolint)
+          run: |
+            cd ${GITHUB_WORKSPACE}/tests
+            .bats-battery/bats-core/bin/bats 02.dockerfile_check.bats
 
-          - name: Tcl-build. Build. Check image and container. Check builds.
-            run: |
-              echo "::group::Build image"
-              echo "Build image"
-              set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
-              export IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
-              cd ${GITHUB_WORKSPACE}/src/hook
-              ./build.sh
-              echo "::endgroup::"
+        - name: Tcl-build. Build. Check image and container. Check builds.
+          run: |
+            echo "::group::Build image"
+            echo "Build image"
+            set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
+            export IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+            cd ${GITHUB_WORKSPACE}/src/hook
+            ./build.sh
+            echo "::endgroup::"
 
-              echo "::group::Check image and container"
-              cd ${GITHUB_WORKSPACE}/tests
-              echo "Check docker image (dockle)"
-              .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-              echo "Check docker container"
-              .bats-battery/bats-core/bin/bats 04.container_check.bats
-              echo "Check builds"
-              .bats-battery/bats-core/bin/bats 05.builds_check.bats
-              echo "::endgroup::"
+            echo "::group::Check image and container"
+            cd ${GITHUB_WORKSPACE}/tests
+            echo "Check docker image (dockle)"
+            .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
+            echo "Check docker container"
+            .bats-battery/bats-core/bin/bats 04.container_check.bats
+            echo "Check builds"
+            .bats-battery/bats-core/bin/bats 05.builds_check.bats
+            echo "::endgroup::"
 #+end_src
 
 ** ../.github/.trigger_on_push :code:
