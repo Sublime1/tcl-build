@@ -341,7 +341,7 @@ Run the build container in the background with Docker:
         -v $PWD/workspaces:/workspaces\
         -v $PWD/builds:/builds \
         --name=tcl-build \
-        oupfiz5/tcl-build:latest
+        oupfiz5/tcl-build:22.01
 
 
 <a id="build-applications"></a>
@@ -352,10 +352,10 @@ Build all program in tcl-build using a `docker exec` and default congratulations
 
     docker exec -it tcl-build bash /builds/all-build.sh
 
-Build any applications with version customization in tcl-build using `docker exec`. For example install tcl version 8.6.10 is:
+Build any applications with version customization in tcl-build using `docker exec`. For example install tcl version 8.6.11 is:
 
     docker exec -it \
-           -e TCL_VERSION=8.6.10 \
+           -e TCL_VERSION=8.6.11 \
            tcl-build \
            bash /builds/tcl-build.sh
 

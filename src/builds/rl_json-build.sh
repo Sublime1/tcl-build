@@ -16,9 +16,10 @@ fi
 mkdir -p /workspaces/logs
 cd /workspaces/"${package_directory}" || exit 1
 echo "Running the autoconf configure in /workspaces/${package_directory}"
+autoconf || exit 1
+ls -la config*
 echo "Building ${package_directory}"
 : > /workspaces/logs/"${package_directory}".log
-autoconf
 ./configure --prefix="${PREFIX}" \
      --with-tcl="${PREFIX}"/lib \
      --with-tclinclude="${PREFIX}"/include 2>&1 | tee -a /workspaces/logs/"${package_directory}".log

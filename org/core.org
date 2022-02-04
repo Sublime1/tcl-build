@@ -225,7 +225,7 @@ docker run -itd \
     -v $PWD/workspaces:/workspaces\
     -v $PWD/builds:/builds \
     --name=tcl-build \
-    oupfiz5/tcl-build:latest
+    oupfiz5/tcl-build:22.01
 #+end_example
 
 ** Build applications
@@ -237,10 +237,10 @@ Build all program in tcl-build using a =docker exec= and default congratulations
 docker exec -it tcl-build bash /builds/all-build.sh
 #+end_src
 
-Build any applications with version customization in tcl-build using =docker exec=. For example install tcl version 8.6.10 is:
+Build any applications with version customization in tcl-build using =docker exec=. For example install tcl version 8.6.11 is:
 #+begin_src sh :tangle no
   docker exec -it \
-         -e TCL_VERSION=8.6.10 \
+         -e TCL_VERSION=8.6.11 \
          tcl-build \
          bash /builds/tcl-build.sh
 #+end_src
@@ -1126,9 +1126,10 @@ fi
   mkdir -p /workspaces/logs
   cd /workspaces/"${package_directory}" || exit 1
   echo "Running the autoconf configure in /workspaces/${package_directory}"
+  autoconf || exit 1
+  ls -la config*
   echo "Building ${package_directory}"
   : > /workspaces/logs/"${package_directory}".log
-  autoconf
   ./configure --prefix="${PREFIX}" \
        --with-tcl="${PREFIX}"/lib \
        --with-tclinclude="${PREFIX}"/include 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
