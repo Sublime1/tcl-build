@@ -138,7 +138,7 @@ They are using for testing and scanning:
 <tbody>
 <tr>
 <td class="org-left">FOSSIL_VERSION</td>
-<td class="org-left">2.15.1</td>
+<td class="org-left">2.17</td>
 <td class="org-left">Set upload fossil version</td>
 </tr>
 </tbody>
@@ -159,10 +159,9 @@ They are using for testing and scanning:
 
     docker build \
            --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-           --build-arg VERSION='21.04' \
-           --build-arg FOSSIL_VERSION='2.15.1' \
-           -t oupfiz5/tcl-build:21.04 \
-           -t oupfiz5/tcl-build:latest \
+           --build-arg VERSION='22.01' \
+           --build-arg FOSSIL_VERSION='2.17' \
+           -t oupfiz5/tcl-build:22.01 \
            -f ./Dockerfile \
             .
 
@@ -341,7 +340,7 @@ Run the build container in the background with Docker:
         -v $PWD/workspaces:/workspaces\
         -v $PWD/builds:/builds \
         --name=tcl-build \
-        oupfiz5/tcl-build:latest
+        oupfiz5/tcl-build:22.01
 
 
 <a id="build-applications"></a>
@@ -352,10 +351,10 @@ Build all program in tcl-build using a `docker exec` and default congratulations
 
     docker exec -it tcl-build bash /builds/all-build.sh
 
-Build any applications with version customization in tcl-build using `docker exec`. For example install tcl version 8.6.10 is:
+Build any applications with version customization in tcl-build using `docker exec`. For example install tcl version 8.6.11 is:
 
     docker exec -it \
-           -e TCL_VERSION=8.6.10 \
+           -e TCL_VERSION=8.6.11 \
            tcl-build \
            bash /builds/tcl-build.sh
 

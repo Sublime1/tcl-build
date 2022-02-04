@@ -33,11 +33,7 @@ on:
   workflow_dispatch:
 
 # * Environments
-env:
-  CONTAINER_NAME: "tcl-build"
-  IMAGE_NAME: "tcl-build"
-  IMAGE_TAG: "${{ github.sha }}"
-  REPOSITORY: "oupfiz5"
+#env:
 
 # * Jobs
 jobs:
@@ -60,26 +56,22 @@ jobs:
           cd ${GITHUB_WORKSPACE}/tests
           .bats-battery/bats-core/bin/bats 02.dockerfile_check.bats
 
-      - name: Build image
+      - name: Tcl-build. Build. Check image and container. Check builds.
         run: |
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          echo "::group::Build image"
+          echo "Build image"
+          set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
+          export IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
           cd ${GITHUB_WORKSPACE}/src/hook
           ./build.sh
+          echo "::endgroup::"
 
-      - name: Check docker image (dockle)
-        run: |
+          echo "::group::Check image and container"
           cd ${GITHUB_WORKSPACE}/tests
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          echo "Check docker image (dockle)"
           .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-
-      - name: Check docker container
-        run: |
-          cd ${GITHUB_WORKSPACE}/tests
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          echo "Check docker container"
           .bats-battery/bats-core/bin/bats 04.container_check.bats
-
-      - name: Check builds
-        run: |
-          cd ${GITHUB_WORKSPACE}/tests
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          echo "Check builds"
           .bats-battery/bats-core/bin/bats 05.builds_check.bats
+          echo "::endgroup::"

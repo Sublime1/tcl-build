@@ -1,14 +1,25 @@
-# * Base image
-ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
-FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
-
 # * Arguments
-ARG BUILD_DATE \
-    VERSION \
-    FOSSIL_VERSION=2.17
+ARG \
+    BUILD_DATE="${BUILD_DATE}" \
+    FOSSIL_VERSION="${FOSSIL_VERSION}" \
+    UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
+    UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
+    UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
+    NS_VERSION="${NS_VERSION}" \
+    NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+    RL_JSON_VERSION="${RL_JSON_VERSION}" \
+    TCL_VERSION="${TCL_VERSION}" \
+    TCLLIB_VERSION="${TCLLIB_VERSION}" \
+    THREAD_VERSION="${THREAD_VERSION}" \
+    XOTCL_VERSION="${XOTCL_VERSION}" \
+    TDOM_VERSION="${TDOM_VERSION}"
+
+FROM ${UBUNTU_IMAGE_REPOSITORY}/${UBUNTU_IMAGE_NAME}:${UBUNTU_IMAGE_TAG}
 
 # ** Environments
-ENV NS_VERSION=${NS_VERSION} \
+ENV \
+    FOSSIL_VERSION=${FOSSIL_VERSION} \
+    NS_VERSION=${NS_VERSION} \
     NS_MODULES_VERSION=${NS_MODULES_VERSION} \
     RL_JSON_VERSION=${RL_JSON_VERSION} \
     TCL_VERSION=${TCL_VERSION} \
@@ -36,11 +47,12 @@ LABEL \
 
 # * Environment
 
-# * Copy builds scripts
+# * Copy scripts
 COPY builds /builds
+COPY VERSIONS /VERSIONS
 
 # * Add
-ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-${FOSSIL_VERSION}.tar.gz /tmp/fossil-linux.tar.gz
+ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.17.tar.gz /tmp/fossil-linux.tar.gz
 
 # * Run
 # hadolint ignore=DL3008,DL3003

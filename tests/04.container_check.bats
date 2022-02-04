@@ -2,7 +2,8 @@
 load './helpers.bash'
 
 setup() {
-    . ./common_conf.bash
+    . ../src/VERSIONS
+    IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
 }
 
 @test "Verify container run" {

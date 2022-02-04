@@ -3,6 +3,8 @@
 . /builds/common.sh
 # shellcheck source=../src/builds/env-vars.sh
 . /builds/env-vars.sh
+# shellcheck disable=SC1091
+. /VERSIONS
 
 build_setup
 
