@@ -2,7 +2,8 @@
 load './helpers.bash'
 
 setup() {
-    . ./common_conf.bash
+    . ../src/VERSIONS
+    IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
     WORKSPACES="${BATS_TMPDIR}"/workspaces
 }
 
@@ -14,7 +15,6 @@ setup() {
 
 @test "Run tcl-build container" {
     mkdir -p "${WORKSPACES}"
-    # echo "${WORKSPACES}" >&3
     run docker run -itd \
            -v ${WORKSPACES}:/workspaces \
            -v $(pwd)/../src/builds:/builds \

@@ -7,7 +7,6 @@ setup() {
         targets+=("$REPLY")
     done < <(
         find \
-            ../src/rootfs/etc \
             ../src/hook \
             ../src/builds \
             -type f ! -iname ".gitignore" \

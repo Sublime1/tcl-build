@@ -138,7 +138,7 @@ They are using for testing and scanning:
 <tbody>
 <tr>
 <td class="org-left">FOSSIL_VERSION</td>
-<td class="org-left">2.15.1</td>
+<td class="org-left">2.17</td>
 <td class="org-left">Set upload fossil version</td>
 </tr>
 </tbody>
@@ -159,10 +159,9 @@ They are using for testing and scanning:
 
     docker build \
            --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-           --build-arg VERSION='21.04' \
-           --build-arg FOSSIL_VERSION='2.15.1' \
-           -t oupfiz5/tcl-build:21.04 \
-           -t oupfiz5/tcl-build:latest \
+           --build-arg VERSION='22.01' \
+           --build-arg FOSSIL_VERSION='2.17' \
+           -t oupfiz5/tcl-build:22.01 \
            -f ./Dockerfile \
             .
 
