@@ -52,7 +52,7 @@ COPY builds /builds
 COPY VERSIONS /VERSIONS
 
 # * Add
-ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.17.tar.gz /tmp/fossil-linux.tar.gz
+ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.18.tar.gz /tmp/fossil-linux.tar.gz
 
 # * Run
 # hadolint ignore=DL3008,DL3003
