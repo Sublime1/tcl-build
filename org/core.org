@@ -1047,7 +1047,7 @@ fi
   make install
 
   # cut down on the output to stdout to make Travis-CI consoles faster
-  make install 2>&1 | tee -a /workspaces/logs/"${log_nam}" | cut -c1-64
+  make install 2>&1 | tee -a /workspaces/logs/"${log_name}" | cut -c1-64
 
   build_cleanup
 #+end_src
