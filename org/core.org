@@ -122,7 +122,7 @@ docker build -t oupfiz5/tcl-build .
  |----------------+---------+-------------------------------|
  | BUILD_DATE     | none    | Set build date for label      |
  |----------------+---------+-------------------------------|
- | FOSSIL_VERSION | 2.17    | Set upload fossil version     |
+ | FOSSIL_VERSION | 2.18    | Set upload fossil version     |
  |----------------+---------+-------------------------------|
  | VERSION        | none    | Set version for label         |
  |----------------+---------+-------------------------------|
@@ -134,9 +134,9 @@ docker build -t oupfiz5/tcl-build .
 #+begin_example
   docker build \
          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-         --build-arg VERSION='22.01' \
-         --build-arg FOSSIL_VERSION='2.17' \
-         -t oupfiz5/tcl-build:22.01 \
+         --build-arg VERSION='22.06' \
+         --build-arg FOSSIL_VERSION='2.18' \
+         -t oupfiz5/tcl-build:22.05 \
          -f ./Dockerfile \
           .
 #+end_example
@@ -194,19 +194,19 @@ For configuration is using docker environment variable and/or =builds/env-vars.s
 |--------------------+---------+-------------------------------------|
 | PREFIX             |    /usr | Default values for prefix           |
 |--------------------+---------+-------------------------------------|
-| NS_VERSION         | 4.99.21 | Define NaviServer version           |
+| NS_VERSION         | 4.99.24 | Define NaviServer version           |
 |--------------------+---------+-------------------------------------|
-| NS_MODULES_VERSION | 4.99.21 | Define NaviServer modules version   |
+| NS_MODULES_VERSION | 4.99.24 | Define NaviServer modules version   |
 |--------------------+---------+-------------------------------------|
-| RL_JSON_VERSION    |  0.11.0 | Define [[https://github.com/RubyLane/rl_json][RL_JSON]] version              |
+| RL_JSON_VERSION    |  0.11.1 | Define [[https://github.com/RubyLane/rl_json][RL_JSON]] version              |
 |--------------------+---------+-------------------------------------|
-| TCL_VERSION        |  8.6.11 | Define tcl version                  |
+| TCL_VERSION        |  8.6.12 | Define tcl version                  |
 |--------------------+---------+-------------------------------------|
-| TCLLIB_VERSION     |    1.20 | Define tcl lib version              |
+| TCLLIB_VERSION     |    1.21 | Define tcl lib version              |
 |--------------------+---------+-------------------------------------|
 | TDOM_VERSION       |   0.9.1 | Define tdom version                 |
 |--------------------+---------+-------------------------------------|
-| XOTCL_VERSION      |   2.3.0 | Define xotcl version                |
+| XOTCL_VERSION      |   2.4.0 | Define xotcl version                |
 |--------------------+---------+-------------------------------------|
 
 * Usage
@@ -224,7 +224,7 @@ docker run -itd \
     -v $PWD/workspaces:/workspaces\
     -v $PWD/builds:/builds \
     --name=tcl-build \
-    oupfiz5/tcl-build:22.01
+    oupfiz5/tcl-build:22.08
 #+end_example
 
 ** Build applications
@@ -239,7 +239,7 @@ docker exec -it tcl-build bash /builds/all-build.sh
 Build any applications with version customization in tcl-build using =docker exec=. For example install tcl version 8.6.11 is:
 #+begin_src sh :tangle no
   docker exec -it \
-         -e TCL_VERSION=8.6.11 \
+         -e TCL_VERSION=8.6.12 \
          tcl-build \
          bash /builds/tcl-build.sh
 #+end_src
@@ -295,23 +295,23 @@ docker exec -it tcl-build /bin/bash
 :END:
 #+begin_src sh :shebang ""
   # * Versions
-  FOSSIL_VERSION="${FOSSIL_VERSION:-2.17}" \
-  NS_VERSION="${NS_VERSION:-4.99.23}"
-  NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.23}"
+  FOSSIL_VERSION="${FOSSIL_VERSION:-2.18}" \
+  NS_VERSION="${NS_VERSION:-4.99.24}"
+  NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.24}"
   RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.1}"
   TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
-  THREAD_VERSION="${THREAD_VERSION:-2.8.6}"
-  TCL_VERSION="${TCL_VERSION:-8.6.11}"
-  TCLLIB_VERSION="${TCLLIB_VERSION:-1.20}"
-  XOTCL_VERSION="${XOTCL_VERSION:-2.3.0}"
+  THREAD_VERSION="${THREAD_VERSION:-2.8.7}"
+  TCL_VERSION="${TCL_VERSION:-8.6.12}"
+  TCLLIB_VERSION="${TCLLIB_VERSION:-1.21}"
+  XOTCL_VERSION="${XOTCL_VERSION:-2.4.0}"
 
   CONTAINER_NAME="${CONTAINER_NAME:-tcl-build}"
   IMAGE_REPOSITORY="${IMAGE_REPOSITORY:-oupfiz5}"
   IMAGE_NAME="${IMAGE_NAME:-tcl-build}"
-  IMAGE_TAG="${IMAGE_TAG:-22.03}"
+  IMAGE_TAG="${IMAGE_TAG:-22.08}"
   UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY:-oupfiz5}"
   UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME:-ubuntu-s6}"
-  UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG:-20.04-3.1.0.1}"
+  UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG:-22.04-3.1.2.1}"
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
@@ -494,7 +494,7 @@ docker exec -it tcl-build /bin/bash
 :CUSTOM_ID: ----github--trigger-on-push
 :END:
 #+begin_src yaml :shebang ""
-  Trigger: 4
+  Trigger: 5
 #+end_src
 ** ../.gitignore :code:
 :PROPERTIES:
@@ -512,6 +512,8 @@ docker exec -it tcl-build /bin/bash
 :CUSTOM_ID: dockerfile
 :END:
 #+begin_src sh :shebang ""
+  # syntax=docker/dockerfile:1.4
+
   # * Arguments
   ARG \
       BUILD_DATE="${BUILD_DATE}" \
@@ -566,7 +568,7 @@ docker exec -it tcl-build /bin/bash
   COPY VERSIONS /VERSIONS
 
   # * Add
-  ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.17.tar.gz /tmp/fossil-linux.tar.gz
+  ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.18.tar.gz /tmp/fossil-linux.tar.gz
 
   # * Run
   # hadolint ignore=DL3008,DL3003
@@ -639,12 +641,12 @@ docker exec -it tcl-build /bin/bash
   IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
   DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
-  docker build \
+  docker buildx build \
          --build-arg UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
          --build-arg UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
          --build-arg UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
          --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-         --build-arg FOSSIL_VERSION="${FOSSIL_VERSION:-2.17}" \
+         --build-arg FOSSIL_VERSION="${FOSSIL_VERSION:-2.18}" \
          -t "${IMAGE}" \
          -f ../"${DOCKERFILE}" \
           ../.
@@ -1013,6 +1015,42 @@ fi
   fi
 #+end_src
 
+** builds/tcl-thread-build.sh :code:
+:PROPERTIES:
+:CUSTOM_ID: builds-tcl-thread-build-sh
+:END:
+#+begin_src sh
+  # shellcheck source=../src/builds/common.sh
+  . /builds/common.sh
+  # shellcheck source=../src/builds/env-vars.sh
+  . /builds/env-vars.sh
+  # shellcheck disable=SC1091
+  . /VERSIONS
+
+  build_setup
+
+  log_name="tcl_thread.log"
+  package_directory="tcl${TCL_VERSION}/pkgs/thread*"
+  if [ ! -d /workspaces/"${package_directory}" ]; then
+      cd /workspaces && sh /builds/thread-download.sh
+      tar xvfz "thread${THREAD_VERSION}".tar.gz
+  fi
+
+  mkdir -p /workspaces/logs
+  : > /workspaces/logs/"${log_name}"
+  echo "Running the autoconf configure in /workspaces/tcl/pkgs/thread*"
+  cd /workspaces/"${package_directory}" || exit 1
+  ./configure --enable-threads --prefix="${PREFIX}" \
+              --with-naviserver="${PREFIX}" 2>&1 | tee -a
+  /workspaces/logs/"${log_name}"
+  make 2>&1 | tee -a /workspaces/logs/"${log_name}"
+  make install
+
+  # cut down on the output to stdout to make Travis-CI consoles faster
+  make install 2>&1 | tee -a /workspaces/logs/"${log_nam}" | cut -c1-64
+
+  build_cleanup
+#+end_src
 ** builds/thread-build.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: builds-thread-build-sh
