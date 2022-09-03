@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.4
+
 # * Arguments
 ARG \
     BUILD_DATE="${BUILD_DATE}" \

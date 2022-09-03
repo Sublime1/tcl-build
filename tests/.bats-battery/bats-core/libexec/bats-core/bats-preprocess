@@ -31,6 +31,9 @@ bats_encode_test_name() {
   printf -v "$2" '%s' "$result"
 }
 
+BATS_TEST_PATTERN="^[[:blank:]]*@test[[:blank:]]+(.*[^[:blank:]])[[:blank:]]+\{(.*)\$"
+BATS_TEST_PATTERN_COMMENT="[[:blank:]]*([^[:blank:]()]+)[[:blank:]]*\(?\)?[[:blank:]]+\{[[:blank:]]+#[[:blank:]]*@test[[:blank:]]*\$"
+
 test_file="$1"
 tests=()
 {
@@ -39,7 +42,7 @@ tests=()
     if [[ "$line" =~ $BATS_TEST_PATTERN ]] || [[ "$line" =~ $BATS_TEST_PATTERN_COMMENT ]]; then
       name="${BASH_REMATCH[1]#[\'\"]}"
       name="${name%[\'\"]}"
-      body="${BASH_REMATCH[2]}"
+      body="${BASH_REMATCH[2]:-}"
       bats_encode_test_name "$name" 'encoded_name'
       printf '%s() { bats_test_begin "%s"; %s\n' "${encoded_name:?}" "$name" "$body" || :
 
