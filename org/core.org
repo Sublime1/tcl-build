@@ -15,7 +15,7 @@ The setupfile contain global common property configuration:
 :CUSTOM_ID: about
 :END:
 
-This is [[https://hub.docker.com/_/ubuntu][ubuntu base docker image]] (version 20.04) using [[https://github.com/just-containers/s6-overlay][s6-overlay]] for buid tcl software. The basic idea was taken from [[https://github.com/tcl2020/tcl2020-build][tcl2020-build]] .
+This is [[https://hub.docker.com/_/ubuntu][ubuntu base docker image]] (version 22.04) using [[https://github.com/just-containers/s6-overlay][s6-overlay]] for buid tcl software. The basic idea was taken from [[https://github.com/tcl2020/tcl2020-build][tcl2020-build]] .
 
 Tcl-build is self-hosting at https://chiselapp.com/user/oupfiz5/repository/tcl-build.
 
@@ -49,6 +49,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 - [[#maintenance][Maintenance]]
   - [[#log-output][Log output]]
   - [[#shell-access][Shell access]]
+- [[#changelogmd][../CHANGELOG.md]]
 
 * Prerequisite
 :PROPERTIES:
@@ -84,7 +85,7 @@ They are using for testing and scanning:
 :END:
 #+begin_example
 docker pull oupfiz5/tcl-build:latest
-docker pull oupfiz5/tcl-build:21.07
+docker pull oupfiz5/tcl-build:23.03
 #+end_example
 
 ** Build from chiselapp (fossil)
@@ -122,7 +123,7 @@ docker build -t oupfiz5/tcl-build .
  |----------------+---------+-------------------------------|
  | BUILD_DATE     | none    | Set build date for label      |
  |----------------+---------+-------------------------------|
- | FOSSIL_VERSION | 2.18    | Set upload fossil version     |
+ | FOSSIL_VERSION | 2.21    | Set upload fossil version     |
  |----------------+---------+-------------------------------|
  | VERSION        | none    | Set version for label         |
  |----------------+---------+-------------------------------|
@@ -134,10 +135,10 @@ docker build -t oupfiz5/tcl-build .
 #+begin_example
   docker build \
          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-         --build-arg VERSION='22.06' \
-         --build-arg FOSSIL_VERSION='2.18' \
-         -t oupfiz5/tcl-build:22.05 \
-         -f ./Dockerfile \
+         --build-arg VERSION='23.03' \
+         --build-arg FOSSIL_VERSION='2.21' \
+         --tag oupfiz5/tcl-build:23.05 \
+         --file ./Dockerfile \
           .
 #+end_example
 
@@ -162,10 +163,10 @@ For configuration is using environment variables.
 Set the timezone for the container, defaults to UTC. To set the timezone set the desired timezone with the variable TZ.
 
 #+begin_example
-mkdir -p $PWD/workspaces
+mkdir -p $pwd/workspaces
 docker run -itd \
-    -v $PWD/workspaces:/workspaces\
-    -v $PWD/builds:/builds \
+    -v $pwd/workspaces:/workspaces\
+    -v $(pwd)/builds:/builds \
     --env 'TZ=Europe/Moscow' \
     --name=tcl-build \
     oupfiz5/tcl-build:latest
@@ -198,11 +199,11 @@ For configuration is using docker environment variable and/or =builds/env-vars.s
 |--------------------+---------+-------------------------------------|
 | NS_MODULES_VERSION | 4.99.24 | Define NaviServer modules version   |
 |--------------------+---------+-------------------------------------|
-| RL_JSON_VERSION    |  0.11.1 | Define [[https://github.com/RubyLane/rl_json][RL_JSON]] version              |
+| RL_JSON_VERSION    |  0.12.2 | Define [[https://github.com/RubyLane/rl_json][RL_JSON]] version              |
 |--------------------+---------+-------------------------------------|
-| TCL_VERSION        |  8.6.12 | Define tcl version                  |
+| TCL_VERSION        |  8.6.13 | Define tcl version                  |
 |--------------------+---------+-------------------------------------|
-| TCLLIB_VERSION     |    1.21 | Define tcl lib version              |
+| TCLLIB_VERSION     |    1.20 | Define tcl lib version              |
 |--------------------+---------+-------------------------------------|
 | TDOM_VERSION       |   0.9.1 | Define tdom version                 |
 |--------------------+---------+-------------------------------------|
@@ -219,12 +220,12 @@ For configuration is using docker environment variable and/or =builds/env-vars.s
 :END:
 Run the build container in the background with Docker:
 #+begin_example
-mkdir -p $PWD/workspaces
+mkdir -p $pwd/workspaces
 docker run -itd \
-    -v $PWD/workspaces:/workspaces\
-    -v $PWD/builds:/builds \
+    -v $pwd/workspaces:/workspaces \
+    -v $pwd/builds:/builds \
     --name=tcl-build \
-    oupfiz5/tcl-build:22.08
+    oupfiz5/tcl-build:23.05
 #+end_example
 
 ** Build applications
@@ -238,10 +239,10 @@ docker exec -it tcl-build bash /builds/all-build.sh
 
 Build any applications with version customization in tcl-build using =docker exec=. For example install tcl version 8.6.11 is:
 #+begin_src sh :tangle no
-  docker exec -it \
-         -e TCL_VERSION=8.6.12 \
-         tcl-build \
-         bash /builds/tcl-build.sh
+docker exec -it \
+    -e TCL_VERSION=8.6.13 \
+    tcl-build \
+    bash /builds/tcl-build.sh
 #+end_src
 
 Modify the source code of any package in the workspaces directory. Then you can use make, cmake, ... to rebuild the container with the changes.  Use the build container with your favorite IDE.
@@ -285,6 +286,23 @@ docker run -it --rm \
 #+begin_example
 docker exec -it tcl-build /bin/bash
 #+end_example
+* ../CHANGELOG.md
+#+begin_src md :tangle ../CHANGELOG.md
+# Changelog
+## 23.05 - 2023-05-03
+
+### Added
+- image tag `latest` for docker image
+
+### Changed
+- used new base docker image ([oupfiz5/ubuntu-s6:22.04-3.1.4.2](https://hub.docker.com/layers/oupfiz5/ubuntu-s6/22.04-3.1.4.2/images/sha256-3374d789ac3295add644bb97915738d17149b6e003c8189201c688583cfdd80e?context=repo))
+- upgrade tcl version to version 8.6.13
+- downgrade tcllib to version 1.20
+- upgrade thread to version 2.8.8
+- install `rl_json` using download source from github
+- `hook/push.sh` push docker image with tag `latest`
+- github pipeline will use ``runs-on: ubuntu-22.04`
+#+end_src
 * Code :code:noexport:
 :PROPERTIES:
 :CUSTOM_ID: code
@@ -294,58 +312,59 @@ docker exec -it tcl-build /bin/bash
 :CUSTOM_ID: versions
 :END:
 #+begin_src sh :shebang ""
-  # * Versions
-  FOSSIL_VERSION="${FOSSIL_VERSION:-2.18}" \
-  NS_VERSION="${NS_VERSION:-4.99.24}"
-  NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.24}"
-  RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.2}"
-  TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
-  THREAD_VERSION="${THREAD_VERSION:-2.8.7}"
-  TCL_VERSION="${TCL_VERSION:-8.6.12}"
-  TCLLIB_VERSION="${TCLLIB_VERSION:-1.21}"
-  XOTCL_VERSION="${XOTCL_VERSION:-2.4.0}"
+# * Versions
+CMAKE_VERSION="${CMAKE_VERSION:-3.26.3}"
+FOSSIL_VERSION="${FOSSIL_VERSION:-2.21}"
+NS_VERSION="${NS_VERSION:-4.99.24}"
+NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.24}"
+RL_JSON_VERSION="${RL_JSON_VERSION:-0.12.2}"
+TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
+THREAD_VERSION="${THREAD_VERSION:-2.8.8}"
+TCL_VERSION="${TCL_VERSION:-8.6.13}"
+TCLLIB_VERSION="${TCLLIB_VERSION:-1.20}"
+XOTCL_VERSION="${XOTCL_VERSION:-2.4.0}"
 
-  CONTAINER_NAME="${CONTAINER_NAME:-tcl-build}"
-  IMAGE_REPOSITORY="${IMAGE_REPOSITORY:-oupfiz5}"
-  IMAGE_NAME="${IMAGE_NAME:-tcl-build}"
-  IMAGE_TAG="${IMAGE_TAG:-22.08}"
-  UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY:-oupfiz5}"
-  UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME:-ubuntu-s6}"
-  UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG:-22.04-3.1.2.1}"
+CONTAINER_NAME="${CONTAINER_NAME:-tcl-build}"
+IMAGE_REPOSITORY="${IMAGE_REPOSITORY:-oupfiz5}"
+IMAGE_NAME="${IMAGE_NAME:-tcl-build}"
+IMAGE_TAG="${IMAGE_TAG:-23.05}"
+UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY:-oupfiz5}"
+UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME:-ubuntu-s6}"
+UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG:-22.04-3.1.4.2}"
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
 :CUSTOM_ID: ----fossil-settings-crlf-glob
 :END:
 #+begin_src sh :shebang ""
-  *
+*
 #+end_src
 ** ../.fossil-settings/crlf-glob.no-warn :code:
 :PROPERTIES:
 :CUSTOM_ID: ----fossil-settings-crlf-glob-no-warn
 :END:
 #+begin_src sh :shebang ""
-  *
+*
 #+end_src
 ** ../.fossil-settings/ignore-glob :code:
 :PROPERTIES:
 :CUSTOM_ID: ----fossil-settings-ignore-glob
 :END:
 #+begin_src sh :shebang ""
-  .git/
-  .github-mirroring/*
-  docs/
-  org/.configuration/*
-  tests/.bats-battery/*/.git
-  tests/.bats-battery/*/.github
-  workspaces/
+.git/
+.github-mirroring/*
+docs/
+org/.configuration/*
+tests/.bats-battery/*/.git
+tests/.bats-battery/*/.github
+src/workspaces/
 #+end_src
 ** ../.fossil-settings/ignore-glob.no-warn :code:
 :PROPERTIES:
 :CUSTOM_ID: ----fossil-settings-ignore-glob-no-warn
 :END:
 #+begin_src sh :shebang ""
-  *
+*
 #+end_src
 ** ../.github/workflows/on-push.yaml :code:
 :PROPERTIES:
@@ -353,140 +372,140 @@ docker exec -it tcl-build /bin/bash
 :END:
 
 #+begin_src yaml :shebang ""
-  name: Build and push docker images
+name: Build and push docker images
 
-  on:
-    push:
-      branches:
-        - master
-        - main
-      paths:
-        - '.github/workflows/*'
-        - '.github/*'
-        - 'src/Dockerfile'
-        - 'src/rootfs/*'
-        - 'src/hook/*'
-        - 'src/*.sh'
-        - 'src/VERSIONS'
-        - 'tests/**'
-    pull_request:
-      branches:
-        - master
-        - main
-      paths:
-        - '.github/workflows/*'
-        - '.github/*'
-        - 'src/Dockerfile'
-        - 'src/rootfs/*'
-        - 'src/hook/*'
-        - 'src/*.sh'
-        - 'tests/**'
-        - 'src/VERSIONS'
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - '.github/workflows/*'
+      - '.github/*'
+      - 'src/Dockerfile'
+      - 'src/rootfs/*'
+      - 'src/hook/*'
+      - 'src/*.sh'
+      - 'src/VERSIONS'
+      - 'tests/**'
+  pull_request:
+    branches:
+      - master
+      - main
+    paths:
+      - '.github/workflows/*'
+      - '.github/*'
+      - 'src/Dockerfile'
+      - 'src/rootfs/*'
+      - 'src/hook/*'
+      - 'src/*.sh'
+      - 'tests/**'
+      - 'src/VERSIONS'
 
-  jobs:
-    build:
-      name: Build and push image to dockerhub
-      runs-on: ubuntu-latest
-      steps:
-        - name: Repo checkout
-          uses: actions/checkout@v2
+jobs:
+  build:
+    name: Build and push image to dockerhub
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Repo checkout
+        uses: actions/checkout@v2
 
-        - name: Login to DockerHub Registry
-          run: |
-            echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: Login to DockerHub Registry
+        run: |
+          echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-        - name: Build images
-          run: |
-            cd ${GITHUB_WORKSPACE}/src/hook
-            ./build.sh
+      - name: Build images
+        run: |
+          cd ${GITHUB_WORKSPACE}/src/hook
+          ./build.sh
 
-        - name: Push images
-          run: |
-            cd ${GITHUB_WORKSPACE}/src/hook
-            ./push.sh
+      - name: Push images
+        run: |
+          cd ${GITHUB_WORKSPACE}/src/hook
+          ./push.sh
 #+end_src
 ** ../.github/workflows/test.yaml :code:
 :PROPERTIES:
 :CUSTOM_ID: ----github-workflows-test-yaml
 :END:
 #+begin_src yaml :shebang ""
-  name: Tests
+name: Tests
 
-  # * Controls
-  # Controls when the action will run.
-  on:
-    push:
-      paths:
-        - '.github/workflows/*'
-        - '.github/*'
-        - 'src/Dockerfile'
-        - 'src/rootfs/*'
-        - 'src/hook/*'
-        - 'src/builds/*'
-        - 'src/*.sh'
-        - 'src/VERSIONS'
-        - 'tests/**'
-      branches-ignore:
-        - 'master'
-        - 'main'
-    pull_request:
-      paths:
-        - '.github/workflows/*'
-        - '.github/*'
-        - 'src/Dockerfile'
-        - 'src/rootfs/*'
-        - 'src/hook/*'
-        - 'src/builds/*'
-        - 'src/*.sh'
-        - 'tests/**'
-      branches-ignore:
-        - 'master'
-        - 'main'
-    workflow_dispatch:
+# * Controls
+# Controls when the action will run.
+on:
+  push:
+    paths:
+      - '.github/workflows/*'
+      - '.github/*'
+      - 'src/Dockerfile'
+      - 'src/rootfs/*'
+      - 'src/hook/*'
+      - 'src/builds/*'
+      - 'src/*.sh'
+      - 'src/VERSIONS'
+      - 'tests/**'
+    branches-ignore:
+      - 'master'
+      - 'main'
+  pull_request:
+    paths:
+      - '.github/workflows/*'
+      - '.github/*'
+      - 'src/Dockerfile'
+      - 'src/rootfs/*'
+      - 'src/hook/*'
+      - 'src/builds/*'
+      - 'src/*.sh'
+      - 'tests/**'
+    branches-ignore:
+      - 'master'
+      - 'main'
+  workflow_dispatch:
 
-  # * Environments
-  #env:
+# * Environments
+#env:
 
-  # * Jobs
-  jobs:
-    checks:
-      name: Checks
-      runs-on: ubuntu-20.04
-      steps:
-        - name: Repo checkout
-          uses: actions/checkout@v2
+# * Jobs
+jobs:
+  checks:
+    name: Checks
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Repo checkout
+        uses: actions/checkout@v2
 
-        - name: Check shell files (shellcheck)
-          run: |
-            sudo apt-get update -y
-            sudo apt-get install shellcheck
-            cd ${GITHUB_WORKSPACE}/tests
-            .bats-battery/bats-core/bin/bats 01.shellchecks.bats
+      - name: Check shell files (shellcheck)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install shellcheck
+          cd ${GITHUB_WORKSPACE}/tests
+          .bats-battery/bats-core/bin/bats 01.shellchecks.bats
 
-        - name: Check Dockerfile (hadolint)
-          run: |
-            cd ${GITHUB_WORKSPACE}/tests
-            .bats-battery/bats-core/bin/bats 02.dockerfile_check.bats
+      - name: Check Dockerfile (hadolint)
+        run: |
+          cd ${GITHUB_WORKSPACE}/tests
+          .bats-battery/bats-core/bin/bats 02.dockerfile_check.bats
 
-        - name: Tcl-build. Build. Check image and container. Check builds.
-          run: |
-            echo "::group::Build image"
-            echo "Build image"
-            set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
-            export IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
-            cd ${GITHUB_WORKSPACE}/src/hook
-            ./build.sh
-            echo "::endgroup::"
+      - name: Tcl-build. Build. Check image and container. Check builds.
+        run: |
+          echo "::group::Build image"
+          echo "Build image"
+          set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
+          export IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+          cd ${GITHUB_WORKSPACE}/src/hook
+          ./build.sh
+          echo "::endgroup::"
 
-            echo "::group::Check image and container"
-            cd ${GITHUB_WORKSPACE}/tests
-            echo "Check docker image (dockle)"
-            .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-            echo "Check docker container"
-            .bats-battery/bats-core/bin/bats 04.container_check.bats
-            echo "Check builds"
-            .bats-battery/bats-core/bin/bats 05.builds_check.bats
-            echo "::endgroup::"
+          echo "::group::Check image and container"
+          cd ${GITHUB_WORKSPACE}/tests
+          echo "Check docker image (dockle)"
+          .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
+          echo "Check docker container"
+          .bats-battery/bats-core/bin/bats 04.container_check.bats
+          echo "Check builds"
+          .bats-battery/bats-core/bin/bats 05.builds_check.bats
+          echo "::endgroup::"
 #+end_src
 
 ** ../.github/.trigger_on_push :code:
@@ -494,7 +513,7 @@ docker exec -it tcl-build /bin/bash
 :CUSTOM_ID: ----github--trigger-on-push
 :END:
 #+begin_src yaml :shebang ""
-  Trigger: 5
+Trigger: 5
 #+end_src
 ** ../.gitignore :code:
 :PROPERTIES:
@@ -502,132 +521,133 @@ docker exec -it tcl-build /bin/bash
 :END:
 #+name: .gitignore
 #+begin_src sh :shebang ""
-  .fslckout
-  .projectile
-  /workspaces/*
-  .fossil-settings/*
+.fslckout
+.projectile
+/workspaces/*
+.fossil-settings/*
 #+end_src
 ** Dockerfile :code:
 :PROPERTIES:
 :CUSTOM_ID: dockerfile
 :END:
 #+begin_src sh :shebang ""
-  # syntax=docker/dockerfile:1.4
+# syntax=docker/dockerfile:1.4
 
-  # * Arguments
-  ARG \
-      BUILD_DATE="${BUILD_DATE}" \
-      FOSSIL_VERSION="${FOSSIL_VERSION}" \
-      UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
-      UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
-      UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
-      NS_VERSION="${NS_VERSION}" \
-      NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
-      RL_JSON_VERSION="${RL_JSON_VERSION}" \
-      TCL_VERSION="${TCL_VERSION}" \
-      TCLLIB_VERSION="${TCLLIB_VERSION}" \
-      THREAD_VERSION="${THREAD_VERSION}" \
-      XOTCL_VERSION="${XOTCL_VERSION}" \
-      TDOM_VERSION="${TDOM_VERSION}"
+# * Arguments
+ARG \
+    BUILD_DATE="${BUILD_DATE}" \
+    CMAKE_VERSION="${CMAKE_VERSION}" \
+    FOSSIL_VERSION="${FOSSIL_VERSION}" \
+    UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
+    UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
+    UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
+    NS_VERSION="${NS_VERSION}" \
+    NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+    RL_JSON_VERSION="${RL_JSON_VERSION}" \
+    TCL_VERSION="${TCL_VERSION}" \
+    TCLLIB_VERSION="${TCLLIB_VERSION}" \
+    THREAD_VERSION="${THREAD_VERSION}" \
+    XOTCL_VERSION="${XOTCL_VERSION}" \
+    TDOM_VERSION="${TDOM_VERSION}"
 
-  FROM ${UBUNTU_IMAGE_REPOSITORY}/${UBUNTU_IMAGE_NAME}:${UBUNTU_IMAGE_TAG}
+FROM ${UBUNTU_IMAGE_REPOSITORY}/${UBUNTU_IMAGE_NAME}:${UBUNTU_IMAGE_TAG}
 
-  # ** Environments
-  ENV \
-      FOSSIL_VERSION=${FOSSIL_VERSION} \
-      NS_VERSION=${NS_VERSION} \
-      NS_MODULES_VERSION=${NS_MODULES_VERSION} \
-      RL_JSON_VERSION=${RL_JSON_VERSION} \
-      TCL_VERSION=${TCL_VERSION} \
-      TCLLIB_VERSION=${TCLLIB_VERSION} \
-      THREAD_VERSION=${THREAD_VERSION} \
-      XOTCL_VERSION=${XOTCL_VERSION} \
-      TDOM_VERSION=${TDOM_VERSION}
+# ** Environments
+ENV \
+    FOSSIL_VERSION=${FOSSIL_VERSION} \
+    NS_VERSION=${NS_VERSION} \
+    NS_MODULES_VERSION=${NS_MODULES_VERSION} \
+    RL_JSON_VERSION=${RL_JSON_VERSION} \
+    TCL_VERSION=${TCL_VERSION} \
+    TCLLIB_VERSION=${TCLLIB_VERSION} \
+    THREAD_VERSION=${THREAD_VERSION} \
+    XOTCL_VERSION=${XOTCL_VERSION} \
+    TDOM_VERSION=${TDOM_VERSION}
 
-  # * Labels
-  LABEL \
-      maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
-      org.opencontainers.image.created="${BUILD_DATE}" \
-      org.opencontainers.image.authors="Oupfiz V (Five)" \
-      org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/tcl-build/home" \
-      org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/tcl-build/wiki" \
-      org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/tcl-build/brlist" \
-      org.opencontainers.image.version="0.0.3d" \
-      org.opencontainers.image.revision="" \
-      org.opencontainers.image.vendor="" \
-      org.opencontainers.image.licenses="" \
-      org.opencontainers.image.ref.name="" \
-      org.opencontainers.image.title="Ubuntu image for build tcl packages" \
-      org.opencontainers.image.description="Ubuntu image for build tcl packages" \
-      org.opencontainers.tclbuild.version="${VERSION}"
+# * Labels
+LABEL \
+    maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
+    org.opencontainers.image.created="${BUILD_DATE}" \
+    org.opencontainers.image.authors="Oupfiz V (Five)" \
+    org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/tcl-build/home" \
+    org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/tcl-build/wiki" \
+    org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/tcl-build/brlist" \
+    org.opencontainers.image.version="0.0.3d" \
+    org.opencontainers.image.revision="" \
+    org.opencontainers.image.vendor="" \
+    org.opencontainers.image.licenses="" \
+    org.opencontainers.image.ref.name="" \
+    org.opencontainers.image.title="Ubuntu image for build tcl packages" \
+    org.opencontainers.image.description="Ubuntu image for build tcl packages" \
+    org.opencontainers.tclbuild.version="${VERSION}"
 
-  # * Environment
+# * Environment
 
-  # * Copy scripts
-  COPY builds /builds
-  COPY VERSIONS /VERSIONS
+# * Copy scripts
+COPY builds /builds
+COPY VERSIONS /VERSIONS
 
-  # * Add
-  ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.18.tar.gz /tmp/fossil-linux.tar.gz
+# * Add
+ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.21.tar.gz /tmp/fossil-linux.tar.gz
 
-  # * Run
-  # hadolint ignore=DL3008,DL3003
-  RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
-      && apt-get update \
-      && export DEBIAN_FRONTEND=noninteractive \
-      && apt-get -y install --no-install-recommends \
-                 apache2 \
-                 apache2-dev \
-                 apt-utils \
-                 autoconf \
-                 automake \
-                 bash \
-                 curl \
-                 gcc \
-                 gdb \
-                 git \
-                 gnupg \
-                 libboost-all-dev \
-                 libbsd-dev \
-                 libcurl4-openssl-dev \
-                 libgd-dev \
-                 libgeos-dev \
-                 libmemcached-dev \
-                 libpq-dev \
-                 libproj-dev \
-                 libreadline-dev \
-                 libssl-dev \
-                 libtool \
-                 libuv1-dev \
-                 libxml2-dev \
-                 libxslt-dev \
-                 libyajl-dev \
-                 libzookeeper-mt-dev \
-                 locales \
-                 lsb-release \
-                 make \
-                 minizip \
-                 openssl \
-                 pkg-config \
-                 postgresql-client \
-                 python3-pip \
-                 python3-venv \
-                 swig3.0 \
-                 tzdata \
-                 wget \
-                 zlib1g-dev \
-      && pip3 install --no-cache-dir "cmake==3.17.2" \
-      && locale-gen "en_US.UTF-8" \
-      && update-locale LANG="en_US.UTF-8" \
-      && update-locale LC_ALL="en_US.UTF-8" \
-      && cd /tmp \
-      && tar xzf /tmp/fossil-linux.tar.gz -C /usr/bin \
-      && rm /tmp/fossil-linux.tar.gz \
-      && apt-get clean \
-      && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/*
+# * Run
+# hadolint ignore=DL3008,DL3003
+RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
+    && apt-get update \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends \
+               apache2 \
+               apache2-dev \
+               apt-utils \
+               autoconf \
+               automake \
+               bash \
+               curl \
+               gcc \
+               gdb \
+               git \
+               gnupg \
+               libboost-all-dev \
+               libbsd-dev \
+               libcurl4-openssl-dev \
+               libgd-dev \
+               libgeos-dev \
+               libmemcached-dev \
+               libpq-dev \
+               libproj-dev \
+               libreadline-dev \
+               libssl-dev \
+               libtool \
+               libuv1-dev \
+               libxml2-dev \
+               libxslt-dev \
+               libyajl-dev \
+               libzookeeper-mt-dev \
+               locales \
+               lsb-release \
+               make \
+               minizip \
+               openssl \
+               pkg-config \
+               postgresql-client \
+               python3-pip \
+               python3-venv \
+               swig3.0 \
+               tzdata \
+               wget \
+               zlib1g-dev \
+    && pip3 install --no-cache-dir "cmake==3.26.1" \
+    && locale-gen "en_US.UTF-8" \
+    && update-locale LANG="en_US.UTF-8" \
+    && update-locale LC_ALL="en_US.UTF-8" \
+    && cd /tmp \
+    && tar xzf /tmp/fossil-linux.tar.gz -C /usr/bin \
+    && rm /tmp/fossil-linux.tar.gz \
+    && apt-get clean \
+    && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/*
 
-  # * Entrypoint
-  ENTRYPOINT ["/init"]
+# * Entrypoint
+ENTRYPOINT ["/init"]
 #+end_src
 
 ** hook/build.sh :code:
@@ -635,21 +655,23 @@ docker exec -it tcl-build /bin/bash
 :CUSTOM_ID: hook-build-sh
 :END:
 #+begin_src sh  :results output pp :noweb strip-export :dir ../src/hook
-  # shellcheck disable=SC1091
-  set -a; source ../VERSIONS ; set +a;
+# shellcheck disable=SC1091
+set -a; source ../VERSIONS ; set +a;
 
-  IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
-  DOCKERFILE="${DOCKERFILE:-Dockerfile}"
+IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+IMAGE_LATEST="${IMAGE_LATEST:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:latest}"
+DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
-  docker buildx build \
-         --build-arg UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
-         --build-arg UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
-         --build-arg UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
-         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-         --build-arg FOSSIL_VERSION="${FOSSIL_VERSION:-2.18}" \
-         -t "${IMAGE}" \
-         -f ../"${DOCKERFILE}" \
-          ../.
+docker buildx build \
+    --build-arg UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
+    --build-arg UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
+    --build-arg UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
+    --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+    --build-arg FOSSIL_VERSION="${FOSSIL_VERSION:-2.21}" \
+    --tag "${IMAGE}" \
+    --tag "${IMAGE_LATEST}" \
+    --file ../"${DOCKERFILE}" \
+    ../.
 #+end_src
 
 ** hook/push.sh :code:
@@ -657,123 +679,108 @@ docker exec -it tcl-build /bin/bash
 :CUSTOM_ID: hook-push-sh
 :END:
 #+begin_src sh
-  # shellcheck disable=SC1091
-  set -a; source ../VERSIONS ; set +a;
+# shellcheck disable=SC1091
+set -a; source ../VERSIONS ; set +a;
 
-  IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+# * Push docker images
+IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+IMAGE_LATEST="${IMAGE_LATEST:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:latest}"
 
-  docker push "${IMAGE}"
+docker image tag "${IMAGE}" "${IMAGE}"
+docker image tag "${IMAGE}" "${IMAGE_LATEST}"
+docker image push "${IMAGE}"
+docker image push "${IMAGE_LATEST}"
 #+end_src
 
-** rootfs/etc/cont-finish.d/.gitignore :code:noexport:notangle:
-:PROPERTIES:
-:CUSTOM_ID: rootfs-etc-cont-finish-d--gitignore
-:END:
-#+begin_src sh :shebang "" :tangle no
-#+end_src
-
-** rootfs/etc/cont-init.d/.gitignore :code:noexport:notangle:
-:PROPERTIES:
-:CUSTOM_ID: rootfs-etc-cont-init-d--gitignore
-:END:
-#+begin_src sh :shebang "" :tangle no
-#+end_src
-
-** rootfs/etc/fix-attrs.d/.gitignore :code:noexport:notangle:
-:PROPERTIES:
-:CUSTOM_ID: rootfs-etc-fix-attrs-d--gitignore
-:END:
-#+begin_src sh :shebang "" :tangle no
-#+end_src
-** rootfs/etc/services.d/.gitignore :code:noexport:notangle:
-:PROPERTIES:
-:CUSTOM_ID: rootfs-etc-services-d--gitignore
-:END:
-#+begin_src sh :shebang "" :tangle no
-#+end_src
 ** builds/common.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: builds-common-sh
 :END:
 #+begin_src sh :shebang ""
-  # shellcheck shell=bash
-  # Helper functions for build scripts
+# shellcheck shell=bash
+# Helper functions for build scripts
 
-  # export TCLSH="tclsh8.6"
-  export TCLLIBPATH=/usr/lib/tcl8.6/library
-  # export TCL_CONFIG="/workspaces/tcl/unix/tclConfig.sh"
+# export TCLSH="tclsh8.6"
+export TCLLIBPATH=/usr/lib/tcl8.6/library
+# export TCL_CONFIG="/workspaces/tcl/unix/tclConfig.sh"
 
-  build_setup () {
-      if [ ! -d /workspaces ]; then
-          echo "Missing /workspaces directory."
-          echo "Be sure to docker run -v ${WORK_DIR_PATH}:/workspaces ..."
-          exit 1
-      fi
-  }
+build_setup () {
+    if [ ! -d /workspaces ]; then
+        echo "Missing /workspaces directory."
+        echo "Be sure to docker run -v ${WORK_DIR_PATH}:/workspaces ..."
+        exit 1
+    fi
+}
 
-  build_git_clone () {
-      local name="$1"
-      local repo="$2"
-      local extra="$3"
-      if [ ! -d "/workspaces/$name" ]; then
-          echo "No git clone of $name found".
-          cd /workspaces || exit 1
-          echo git clone "$extra" "$repo"
-          git clone "${extra}" "$repo"
-      fi
-  }
+build_git_clone () {
+    local name="$1"
+    local repo="$2"
+    local extra="$3"
+
+    if [ ! -d "/workspaces/$name" ]; then
+        echo "No git clone of $name found".
+        cd /workspaces || exit 1
+        echo "pwd=$(pwd)"
+        echo "Name=${name}"
+        echo "Repo=${repo}"
+        echo "Extra=${extra}"
+        echo "Command is: git clone ${extra} ${repo} ${name}"
+        # shellcheck disable=SC2086
+        git clone ${extra} ${repo} ${name}
+    fi
+}
 
 
-  build_cleanup () {
-      # fix any permissions messed up by the Docker user id
-      # allow edits to the source outside of the container
-      find "$(readlink -f /workspaces)" -type d -print0 | xargs -0 chmod go+rwx
-      find "$(readlink -f /workspaces)" -type f -print0 | xargs -0 chmod go+rw
-  }
+build_cleanup () {
+    # fix any permissions messed up by the Docker user id
+    # allow edits to the source outside of the container
+    find "$(readlink -f /workspaces)" -type d -print0 | xargs -0 chmod go+rwx
+    find "$(readlink -f /workspaces)" -type f -print0 | xargs -0 chmod go+rw
+}
 #+end_src
 ** builds/all-build.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: builds-all-build-sh
 :END:
 #+begin_src sh
-    sh /builds/tcl-build.sh
-    sh /builds/tcllib-build.sh
-    sh /builds/ns-build.sh
-    sh /builds/ns-modules-build-nsdbpg.sh
-    sh /builds/ns-modules-build-nsstats.sh
-    sh /builds/ns-modules-build-nsconf.sh
-    sh /builds/thread-build.sh
-    sh /builds/xotcl-build.sh
-    sh /builds/tdom-build.sh
-    sh /builds/rl_json-build.sh
+sh /builds/tcl-build.sh
+sh /builds/tcllib-build.sh
+sh /builds/ns-build.sh
+sh /builds/ns-modules-build-nsdbpg.sh
+sh /builds/ns-modules-build-nsstats.sh
+sh /builds/ns-modules-build-nsconf.sh
+sh /builds/thread-build.sh
+sh /builds/xotcl-build.sh
+sh /builds/tdom-build.sh
+sh /builds/rl_json-build.sh
 #+end_src
 ** builds/env-vars.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: builds-env-vars-sh
 :END:
 #+begin_src sh
-  export PREFIX="${PREFIX:-/usr}"
+export PREFIX="${PREFIX:-/usr}"
 
-  # * Versions
-  # export NS_VERSION="${NS_VERSION:-4.99.22}"
-  # export NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.22}"
-  # export RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.1}"
-  # export TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
-  # export THREAD_VERSION="${THREAD_VERSION:-2.8.6}"
-  # export TCL_VERSION="${TCL_VERSION:-8.6.11}"
-  # export TCLLIB_VERSION="${TCLLIB_VERSION:-1.20}"
-  # export XOTCL_VERSION="${XOTCL_VERSION:-2.3.0}"
+# * Versions
+# export NS_VERSION="${NS_VERSION:-4.99.22}"
+# export NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.22}"
+# export RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.1}"
+# export TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
+# export THREAD_VERSION="${THREAD_VERSION:-2.8.6}"
+# export TCL_VERSION="${TCL_VERSION:-8.6.11}"
+# export TCLLIB_VERSION="${TCLLIB_VERSION:-1.20}"
+# export XOTCL_VERSION="${XOTCL_VERSION:-2.3.0}"
 
-  # # * Options
-  export WGET_OPTIONS="${WGET_OPTIONS:-""}"
+# * Options
+export WGET_OPTIONS="${WGET_OPTIONS:- --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 }"
 
-  # * NaviServer
-  # Using for NaviServer
-  # the pg_* variables should be the path leading to the include and
-  # library file of postgres to be used in this build.  In particular,
-  # "libpq-fe.h" and "libpq.so" are typically needed.
-  export PG_INCL="/usr/include/postgresql"
-  export PG_LIB="/usr/lib"
+# * NaviServer
+# Using for NaviServer
+# the pg_* variables should be the path leading to the include and
+# library file of postgres to be used in this build.  In particular,
+# "libpq-fe.h" and "libpq.so" are typically needed.
+export PG_INCL="/usr/include/postgresql"
+export PG_LIB="/usr/lib"
 #+end_src
 ** builds/ns-build.sh :code:
 :PROPERTIES:
@@ -826,38 +833,38 @@ docker exec -it tcl-build /bin/bash
 :CUSTOM_ID: builds-ns-modules-download-sh
 :END:
 #+begin_src sh
-  if [ ! -f naviserver-"${NS_MODULES_VERSION}"-modules.tar.gz ] ; then
-      wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/naviserver/naviserver-"${NS_MODULES_VERSION}"-modules.tar.gz
-  fi
+if [ ! -f naviserver-"${NS_MODULES_VERSION}"-modules.tar.gz ] ; then
+    wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/naviserver/naviserver-"${NS_MODULES_VERSION}"-modules.tar.gz
+fi
 #+end_src
 ** builds/ns-modules-build-nsdbpg.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: builds-ns-modules-build-nsdbpg-sh
 :END:
 #+begin_src sh
-  # shellcheck source=../src/builds/common.sh
-  . /builds/common.sh
-  # shellcheck source=../src/builds/env-vars.sh
-  . /builds/env-vars.sh
-  # shellcheck disable=SC1091
-  . /VERSIONS
+# shellcheck source=../src/builds/common.sh
+. /builds/common.sh
+# shellcheck source=../src/builds/env-vars.sh
+. /builds/env-vars.sh
+# shellcheck disable=SC1091
+. /VERSIONS
 
-  build_setup
+build_setup
 
-  package_directory="naviserver-${NS_MODULES_VERSION}-modules"
-    if [ ! -d /workspaces/"${package_directory}" ]; then
-        cd /workspaces && sh /builds/ns-modules-download.sh
-        tar zxvf naviserver-"${NS_MODULES_VERSION}"-modules.tar.gz --transform s/modules/naviserver-"${NS_MODULES_VERSION}"-modules/
-    fi
+package_directory="naviserver-${NS_MODULES_VERSION}-modules"
+if [ ! -d /workspaces/"${package_directory}" ]; then
+    cd /workspaces && sh /builds/ns-modules-download.sh
+    tar zxvf naviserver-"${NS_MODULES_VERSION}"-modules.tar.gz --transform s/modules/naviserver-"${NS_MODULES_VERSION}"-modules/
+fi
 
-    mkdir -p /workspaces/logs
-    : > /workspaces/logs/"${package_directory}".log
-    echo "Running in /workspaces/${package_directory}/nsdbpg"
-    cd /workspaces/"${package_directory}"/nsdbpg || exit 1
-    make PGLIB="${PG_LIB}" PGINCLUDE="${PG_INCL}" NAVISERVER="${PREFIX}" 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
-    make NAVISERVER="${PREFIX}" install 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
+mkdir -p /workspaces/logs
+: > /workspaces/logs/"${package_directory}".log
+echo "Running in /workspaces/${package_directory}/nsdbpg"
+cd /workspaces/"${package_directory}"/nsdbpg || exit 1
+make PGLIB="${PG_LIB}" PGINCLUDE="${PG_INCL}" NAVISERVER="${PREFIX}" 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
+make NAVISERVER="${PREFIX}" install 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
 
-    build_cleanup
+build_cleanup
 #+end_src
 ** builds/ns-modules-build-nsstats.sh :code:
 :PROPERTIES:
@@ -939,11 +946,6 @@ docker exec -it tcl-build /bin/bash
       tar xfz "${package_directory}"-src.tar.gz
   fi
 
-  if [ ! -f /workspaces/tcl/minizip ]; then
-      # tcl8.7 assumes minizip in ../minizip, will cleanup when tcl8.7 releases
-      cp /usr/bin/minizip /workspaces/"${package_directory}"/unix
-  fi
-
   mkdir -p /workspaces/logs
   : > /workspaces/logs/"${package_directory}".log
   echo "Running the autoconf configure in /workspaces/tcl/unix"
@@ -968,8 +970,10 @@ docker exec -it tcl-build /bin/bash
 :END:
 #+begin_src sh
 if [ ! -f tcl"${TCL_VERSION}"-src.tar.gz ] ; then
-    echo wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/tcl/tcl"${TCL_VERSION}"-src.tar.gz
-    wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/tcl/tcl"${TCL_VERSION}"-src.tar.gz
+    echo wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/tcl/tcl"${TCL_VERSION}"-src.tar.gz 2>&1
+    wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/tcl/tcl"${TCL_VERSION}"-src.tar.gz 2>&1
+else
+    echo "File tcl${TCL_VERSION}-src.tar.gz exist. Skip download." 2>&1
 fi
 #+end_src
 
@@ -1010,47 +1014,13 @@ fi
 :CUSTOM_ID: builds-tcllib-download-sh
 :END:
 #+begin_src sh
-  if [ ! -f tcllib-"${TCLLIB_VERSION}".tar.bz2 ] ; then
-      wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/tcllib/tcllib-"${TCLLIB_VERSION}".tar.bz2
-  fi
+if [ ! -f tcllib-"${TCLLIB_VERSION}".tar.bz2 ] ; then
+    wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/tcllib/tcllib-"${TCLLIB_VERSION}".tar.bz2
+else
+    echo "tcllib-${TCLLIB_VERSION}.tar.bz2 exist. Skip download." 2>&1
+fi
 #+end_src
 
-** builds/tcl-thread-build.sh :code:
-:PROPERTIES:
-:CUSTOM_ID: builds-tcl-thread-build-sh
-:END:
-#+begin_src sh
-  # shellcheck source=../src/builds/common.sh
-  . /builds/common.sh
-  # shellcheck source=../src/builds/env-vars.sh
-  . /builds/env-vars.sh
-  # shellcheck disable=SC1091
-  . /VERSIONS
-
-  build_setup
-
-  log_name="tcl_thread.log"
-  package_directory="tcl${TCL_VERSION}/pkgs/thread*"
-  if [ ! -d /workspaces/"${package_directory}" ]; then
-      cd /workspaces && sh /builds/thread-download.sh
-      tar xvfz "thread${THREAD_VERSION}".tar.gz
-  fi
-
-  mkdir -p /workspaces/logs
-  : > /workspaces/logs/"${log_name}"
-  echo "Running the autoconf configure in /workspaces/tcl/pkgs/thread*"
-  cd /workspaces/"${package_directory}" || exit 1
-  ./configure --enable-threads --prefix="${PREFIX}" \
-              --with-naviserver="${PREFIX}" 2>&1 | tee -a
-  /workspaces/logs/"${log_name}"
-  make 2>&1 | tee -a /workspaces/logs/"${log_name}"
-  make install
-
-  # cut down on the output to stdout to make Travis-CI consoles faster
-  make install 2>&1 | tee -a /workspaces/logs/"${log_name}" | cut -c1-64
-
-  build_cleanup
-#+end_src
 ** builds/thread-build.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: builds-thread-build-sh
@@ -1187,37 +1157,44 @@ fi
 :CUSTOM_ID: builds-rl-json-build-sh
 :END:
 #+begin_src sh
-  # shellcheck source=../src/builds/common.sh
-  . /builds/common.sh
-  # shellcheck source=../src/builds/env-vars.sh
-  . /builds/env-vars.sh
-  # shellcheck disable=SC1091
-  . /VERSIONS
+# shellcheck source=../src/builds/common.sh
+. /builds/common.sh
+# shellcheck source=../src/builds/env-vars.sh
+. /builds/env-vars.sh
+# shellcheck disable=SC1091
+. /VERSIONS
 
-  build_setup
+build_setup
 
-  package_directory=rl_json-"${RL_JSON_VERSION}"
+# * Get from git repository
+package_directory="rl_json-${RL_JSON_VERSION}"
+repo='https://github.com/RubyLane/rl_json.git'
+extra="--recurse-submodules --shallow-submodules --depth 1 --branch ${RL_JSON_VERSION}"
 
-  if [ ! -d /workspaces/"${package_directory}" ]; then
-      cd /workspaces && sh /builds/rl_json-download.sh
-      tar xvfz "${package_directory}".tar.gz
-  fi
+# shellcheck disable=SC2086
+build_git_clone $package_directory $repo $extra
 
-  mkdir -p /workspaces/logs
-  cd /workspaces/"${package_directory}" || exit 1
-  echo "Running the autoconf configure in /workspaces/${package_directory}"
-  autoconf || exit 1
-  ls -la config*
-  echo "Building ${package_directory}"
-  : > /workspaces/logs/"${package_directory}".log
-  ./configure --prefix="${PREFIX}" \
-       --with-tcl="${PREFIX}"/lib \
-       --with-tclinclude="${PREFIX}"/include 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
-  # cut down on the output to stdout to make Travis-CI consoles faster
-  make
-  make install 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
+# Because https://github.com/RubyLane/rl_json/issues/41#
+#if [ ! -d /workspaces/"${package_directory}" ]; then
+#    cd /workspaces && sh /builds/rl_json-download.sh
+#    tar xvfz "${package_directory}".tar.gz
+#fi
 
-  build_cleanup
+mkdir -p /workspaces/logs
+cd /workspaces/"${package_directory}" || exit 1
+echo "Running the autoconf configure in /workspaces/${package_directory}"
+autoconf || exit 1
+ls -la config*
+echo "Building ${package_directory}"
+: > /workspaces/logs/"${package_directory}".log
+./configure --prefix="${PREFIX}" \
+    --with-tcl="${PREFIX}"/lib \
+    --with-tclinclude="${PREFIX}"/include 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
+# cut down on the output to stdout to make Travis-CI consoles faster
+make
+make install 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
+
+build_cleanup
 #+end_src
 
 ** builds/rl_json-download.sh :code:
@@ -1225,10 +1202,10 @@ fi
 :CUSTOM_ID: builds-rl-json-download-sh
 :END:
 #+begin_src sh
-  if [ ! -f rl_json$-"{RL_JSON_VERSION}".tar.gz ] ; then
-      echo "${WGET_OPTIONS}" https://github.com/RubyLane/rl_json/archive/refs/tags/"${RL_JSON_VERSION}".tar.gz
-      wget "${WGET_OPTIONS}" https://github.com/RubyLane/rl_json/archive/refs/tags/"${RL_JSON_VERSION}".tar.gz -O rl_json-"${RL_JSON_VERSION}".tar.gz
-  fi
+if [ ! -f rl_json$-"{RL_JSON_VERSION}".tar.gz ] ; then
+    echo "${WGET_OPTIONS}" https://github.com/RubyLane/rl_json/archive/refs/tags/"${RL_JSON_VERSION}".tar.gz
+    wget "${WGET_OPTIONS}" https://github.com/RubyLane/rl_json/archive/refs/tags/"${RL_JSON_VERSION}".tar.gz -O rl_json-"${RL_JSON_VERSION}".tar.gz
+fi
 #+end_src
 
 * Tests :test:noexport:
@@ -1254,36 +1231,30 @@ load '.bats-battery/bats-support/load.bash'
 :END:
 #+begin_src bats :results output pp :noweb strip-export
 
-  setup() {
-      targets=()
-      while IFS=  read -r -d $'\0'; do
-          targets+=("$REPLY")
-      done < <(
-          find \
-              ../src/hook \
-              ../src/builds \
-              -type f ! -iname ".gitignore" \
-              -print0
-      )
-  }
+setup() {
+    targets=()
+    while IFS=  read -r -d $'\0'; do
+        targets+=("$REPLY")
+    done < <(
+        find \
+            ../src/hook \
+            ../src/builds \
+            -type f ! -iname ".gitignore" \
+            -print0
+    )
+}
 
-  @test "Check shell files" {
-        run export LC_ALL=C.UTF-8; shellcheck "${targets[@]}"
-        assert_success
-  }
+@test "Check shell files" {
+      run export LC_ALL=C.UTF-8; shellcheck "${targets[@]}"
+      assert_success
+}
 
-  @test "Check VERSION file" {
-        run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSIONS
-        assert_success
-  }
+@test "Check VERSION file" {
+      run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSIONS
+      assert_success
+}
 
 #+end_src
-
-#+RESULTS:
-: 1..2
-: ok 1 Check shell files
-: /tmp/babel-5WGsj2
-: ok 2 Check VERSION file
 
 ** 02.dockerfile_check.bats :test:
 :PROPERTIES:
@@ -1291,16 +1262,13 @@ load '.bats-battery/bats-support/load.bash'
 :END:
 #+begin_src bats :results output pp :noweb strip-export
 
-  @test "Check Dockerfile" {
-        run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile
-        assert_success
-  }
+@test "Check Dockerfile" {
+    run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile
+    assert_success
+}
 
 #+end_src
 
-#+RESULTS:
-: 1..1
-: ok 1 Check Dockerfile
 ** 03.docker_image_check.bats :test:
 :PROPERTIES:
 :CUSTOM_ID: 03-docker-image-check-bats
@@ -1308,32 +1276,28 @@ load '.bats-battery/bats-support/load.bash'
 
 #+begin_src bats :results output pp :noweb strip-export
 
-  setup() {
-        . ../src/VERSIONS
-        IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+setup() {
+      . ../src/VERSIONS
+      IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
 
-        VERSION=$(
-        curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
-            grep '"tag_name":' | \
-            sed -E 's/.*"v([^"]+)".*/\1/' \
-           )
-    }
+      VERSION=$(
+      curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
+          grep '"tag_name":' | \
+          sed -E 's/.*"v([^"]+)".*/\1/' \
+         )
+  }
 
-  @test "Check docker image" {
-      run docker run --rm \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          -v "$(pwd)"/.dockleignore:/.dockleignore \
-          goodwithtech/dockle:v"${VERSION}" \
-          --exit-code 1 \
-          --exit-level fatal \
-          "${IMAGE}"
-      assert_success
-    }
+@test "Check docker image" {
+    run docker run --rm \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v "$(pwd)"/.dockleignore:/.dockleignore \
+        goodwithtech/dockle:v"${VERSION}" \
+        --exit-code 1 \
+        --exit-level fatal \
+        "${IMAGE}"
+    assert_success
+  }
 #+end_src
-
-#+RESULTS:
-: 1..1
-: ok 1 Check docker image
 
 ** 04.container_check.bats :test:
 :PROPERTIES:
@@ -1341,72 +1305,62 @@ load '.bats-battery/bats-support/load.bash'
 :END:
 #+begin_src bats :results output pp :noweb strip-export
 
-  setup() {
-      . ../src/VERSIONS
-      IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
-  }
+setup() {
+    . ../src/VERSIONS
+    IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+}
 
-  @test "Verify container run" {
-        run docker run -d --rm --name="${CONTAINER_NAME}" "${IMAGE}"
-        assert_success
-  }
+@test "Verify container run" {
+      run docker run -d --rm --name="${CONTAINER_NAME}" "${IMAGE}"
+      assert_success
+}
 
-  @test "Verify state status container - running" {
-        sleep 5
-        run docker inspect --format 'result={{ .State.Status }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=running'
-  }
+@test "Verify state status container - running" {
+      sleep 5
+      run docker inspect --format 'result={{ .State.Status }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=running'
+}
 
-  @test "Verify state running container - true" {
-        run docker inspect --format 'result={{ .State.Running }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=true'
-  }
+@test "Verify state running container - true" {
+      run docker inspect --format 'result={{ .State.Running }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=true'
+}
 
-  @test "Verify state restarting container - false" {
-        run docker inspect --format 'result={{ .State.Restarting }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=false'
-  }
+@test "Verify state restarting container - false" {
+      run docker inspect --format 'result={{ .State.Restarting }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=false'
+}
 
-  @test "Verify state error container - <empty>" {
-        run docker inspect --format 'result={{ .State.Error }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result='
-  }
+@test "Verify state error container - <empty>" {
+      run docker inspect --format 'result={{ .State.Error }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result='
+}
 
-  @test "Verify restart count container - 0" {
-        run docker inspect --format 'result={{ .RestartCount }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=0'
-  }
+@test "Verify restart count container - 0" {
+      run docker inspect --format 'result={{ .RestartCount }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=0'
+}
 
-  # @test "Verify AppArmor Profile - if applicable" {
-  #       skip
-  #       run docker inspect --format 'AppArmorProfile={{ .AppArmorProfile }}' "${CONTAINER_NAME}"
-  #       assert_success
-  #       refute_output "AppArmorProfile=[]"
-  #       refute_output "AppArmorProfile="
-  #       refute_output "AppArmorProfile=<no value>"
-  # }
+# @test "Verify AppArmor Profile - if applicable" {
+#       skip
+#       run docker inspect --format 'AppArmorProfile={{ .AppArmorProfile }}' "${CONTAINER_NAME}"
+#       assert_success
+#       refute_output "AppArmorProfile=[]"
+#       refute_output "AppArmorProfile="
+#       refute_output "AppArmorProfile=<no value>"
+# }
 
-  @test "Verify container stop" {
-        run docker container stop "${CONTAINER_NAME}"
-        assert_success
-  }
+@test "Verify container stop" {
+      run docker container stop "${CONTAINER_NAME}"
+      assert_success
+}
 
 #+end_src
-
-#+RESULTS:
-: 1..7
-: ok 1 Verify container run
-: ok 2 Verify state status container - running
-: ok 3 Verify state running container - true
-: ok 4 Verify state restarting container - false
-: ok 5 Verify state error container - <empty>
-: ok 6 Verify restart count container - 0
-: ok 7 Verify container stop
 
 ** 05.builds_check.bats :test:
 :PROPERTIES:
@@ -1414,50 +1368,50 @@ load '.bats-battery/bats-support/load.bash'
 :END:
 #+begin_src bats :results output pp :noweb strip-export
 
-  setup() {
-      . ../src/VERSIONS
-      IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
-      WORKSPACES="${BATS_TMPDIR}"/workspaces
-  }
+setup() {
+    . ../src/VERSIONS
+    IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+    WORKSPACES="${BATS_TMPDIR}"/workspaces
+}
 
-  @test "Remove container" {
-      skip
-      run docker container rm "${CONTAINER_NAME}" || true
-      assert_success
-  }
+@test "Remove container" {
+    skip
+    run docker container rm "${CONTAINER_NAME}" || true
+    assert_success
+}
 
-  @test "Run tcl-build container" {
-      mkdir -p "${WORKSPACES}"
-      run docker run -itd \
-             -v ${WORKSPACES}:/workspaces \
-             -v $(pwd)/../src/builds:/builds \
-             --name="${CONTAINER_NAME}" \
-             "${IMAGE}"
-      assert_success
-  }
+@test "Run tcl-build container" {
+    mkdir -p "${WORKSPACES}"
+    run docker run -itd \
+           -v ${WORKSPACES}:/workspaces \
+           -v $(pwd)/../src/builds:/builds \
+           --name="${CONTAINER_NAME}" \
+           "${IMAGE}"
+    assert_success
+}
 
-  @test "Build all" {
-      sleep 5
-      run docker exec \
-          "${CONTAINER_NAME}" \
-          bash /builds/all-build.sh
-      assert_success
-  }
+@test "Build all" {
+    sleep 5
+    run docker exec \
+        "${CONTAINER_NAME}" \
+        bash /builds/all-build.sh
+    assert_success
+}
 
-  @test "Container stop" {
-      run docker container stop "${CONTAINER_NAME}"
-      assert_success
-  }
+@test "Container stop" {
+    run docker container stop "${CONTAINER_NAME}"
+    assert_success
+}
 
-  @test "Container remove" {
-      run docker container rm "${CONTAINER_NAME}"
-      assert_success
-  }
+@test "Container remove" {
+    run docker container rm "${CONTAINER_NAME}"
+    assert_success
+}
 
-  @test "Remove temporary directory (workspaces)" {
-      run rm -rf "${WORKSPACES}"
-      assert_success
-  }
+@test "Remove temporary directory (workspaces)" {
+    run rm -rf "${WORKSPACES}"
+    assert_success
+}
 
 #+end_src
 
@@ -1466,29 +1420,29 @@ load '.bats-battery/bats-support/load.bash'
 :CUSTOM_ID: shellcheck-sh
 :END:
 #+begin_src sh :results output pp :noweb strip-export :tangle no
-  set -e
+set -e
 
-  targets=()
-  while IFS=  read -r -d $'\0'; do
-      targets+=("$REPLY")
-  done < <(
-    find \
-      ../src/rootfs/etc \
-      ../src/hook \
-      -type f \
-      -print0
-    )
+targets=()
+while IFS=  read -r -d $'\0'; do
+    targets+=("$REPLY")
+done < <(
+  find \
+    ../src/rootfs/etc \
+    ../src/hook \
+    -type f \
+    -print0
+  )
 
 
-  echo "Shellcheck files"
-  LC_ALL=C.UTF-8 shellcheck "${targets[@]}"
+echo "Shellcheck files"
+LC_ALL=C.UTF-8 shellcheck "${targets[@]}"
 
-  # VERSION were exclude from main check (above)
-  # exclude warning https://github.com/koalaman/shellcheck/wiki/SC2034
-  echo "Shellcheck VERSION"
-  #LC_ALL=C.UTF-8 shellcheck --shell=sh --exclude=SC2034 VERSION
+# VERSION were exclude from main check (above)
+# exclude warning https://github.com/koalaman/shellcheck/wiki/SC2034
+echo "Shellcheck VERSION"
+#LC_ALL=C.UTF-8 shellcheck --shell=sh --exclude=SC2034 VERSION
 
-  exit $?
+exit $?
 #+end_src
 
 ** docker_image_check.sh :test:noexport:notangle:
@@ -1496,26 +1450,24 @@ load '.bats-battery/bats-support/load.bash'
 :CUSTOM_ID: docker-image-check-sh
 :END:
 #+begin_src sh :results output pp :noweb strip-export :tangle no
-  set -e
-  IMAGE_NAME="${1:-oupfiz5/tcl-build:latest}"
+set -e
+IMAGE_NAME="${1:-oupfiz5/tcl-build:latest}"
 
-  # * Install dockle and check targets
-  # Pay attention: some checks are ignored using .dockleignore
-  VERSION=$(
-      curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
-          grep '"tag_name":' | \
-          sed -E 's/.*"v([^"]+)".*/\1/' \
-         ) && docker run --rm \
-                         -v /var/run/docker.sock:/var/run/docker.sock \
-                         -v "$(pwd)"/.dockleignore:/.dockleignore \
-                         goodwithtech/dockle:v"${VERSION}" \
-                         --exit-code 1 \
-                         --exit-level fatal \
-                         "${IMAGE_NAME}"
-  exit $?
+# * Install dockle and check targets
+# Pay attention: some checks are ignored using .dockleignore
+VERSION=$(
+    curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
+        grep '"tag_name":' | \
+        sed -E 's/.*"v([^"]+)".*/\1/' \
+       ) && docker run --rm \
+                       -v /var/run/docker.sock:/var/run/docker.sock \
+                       -v "$(pwd)"/.dockleignore:/.dockleignore \
+                       goodwithtech/dockle:v"${VERSION}" \
+                       --exit-code 1 \
+                       --exit-level fatal \
+                       "${IMAGE_NAME}"
+exit $?
 #+end_src
-
-#+RESULTS:
 
 ** .dockleignore :test:
 :PROPERTIES:
@@ -1534,31 +1486,26 @@ CIS-DI-0001
 :CUSTOM_ID: dockerfile-check-sh
 :END:
 #+begin_src sh :results output pp :noweb strip-export :tangle no
-    set -e
+set -e
 
-    # * Get list of targets
-    targets=()
-    while IFS=  read -r -d $'\0'; do
-        targets+=("$REPLY")
-    done < <(
-      find \
-         ../src/Dockerfile \
-        -type f \
-        -print0
-      )
+# * Get list of targets
+targets=()
+while IFS=  read -r -d $'\0'; do
+    targets+=("$REPLY")
+done < <(
+  find \
+     ../src/Dockerfile \
+    -type f \
+    -print0
+  )
 
-    # * Pull hadolint and check targets
-    echo Test Dockerfile - $(date)
-    docker run --rm -i hadolint/hadolint < "${targets[@]}" && echo "Success"
+# * Pull hadolint and check targets
+echo Test Dockerfile - $(date)
+docker run --rm -i hadolint/hadolint < "${targets[@]}" && echo "Success"
 
-    exit $?
+exit $?
 #+end_src
 
 #+RESULTS:
 : Test Dockerfile - Пт 16 июл 2021 00:36:29 MSK
 : Success
-* TODO Improve :noexport:
-:PROPERTIES:
-:CUSTOM_ID: improve
-:END:
-1. Docker replace command for add fossil

@@ -3,91 +3,91 @@ fixtures run
 bats_require_minimum_version 1.5.0
 
 @test "run --keep-empty-lines preserves leading empty lines" {
-    run --keep-empty-lines -- echo -n $'\na'
-    printf "'%s'\n" "${lines[@]}"
-    [ "${lines[0]}" == '' ]
-    [ "${lines[1]}" == a ]
-    [ ${#lines[@]} -eq 2 ]
+  run --keep-empty-lines -- echo -n $'\na'
+  printf "'%s'\n" "${lines[@]}"
+  [ "${lines[0]}" == '' ]
+  [ "${lines[1]}" == a ]
+  [ ${#lines[@]} -eq 2 ]
 }
 
 @test "run --keep-empty-lines preserves inner empty lines" {
-    run --keep-empty-lines -- echo -n $'a\n\nb'
-    printf "'%s'\n" "${lines[@]}"
-    [ "${lines[0]}" == a ]
-    [ "${lines[1]}" == '' ]
-    [ "${lines[2]}" == b ]
-    [ ${#lines[@]} -eq 3 ]
+  run --keep-empty-lines -- echo -n $'a\n\nb'
+  printf "'%s'\n" "${lines[@]}"
+  [ "${lines[0]}" == a ]
+  [ "${lines[1]}" == '' ]
+  [ "${lines[2]}" == b ]
+  [ ${#lines[@]} -eq 3 ]
 }
 
 @test "run --keep-empty-lines preserves trailing empty lines" {
-    run --keep-empty-lines -- echo -n $'a\n'
-    printf "'%s'\n" "${lines[@]}"
-    [ "${lines[0]}" == a ]
-    [ "${lines[1]}" == '' ]
-    [ ${#lines[@]} -eq 2 ]
+  run --keep-empty-lines -- echo -n $'a\n'
+  printf "'%s'\n" "${lines[@]}"
+  [ "${lines[0]}" == a ]
+  [ "${lines[1]}" == '' ]
+  [ ${#lines[@]} -eq 2 ]
 }
 
 @test "run --keep-empty-lines preserves multiple trailing empty lines" {
-    run --keep-empty-lines -- echo -n $'a\n\n'
-    printf "'%s'\n" "${lines[@]}"
-    [ "${lines[0]}" == a ]
-    [ "${lines[1]}" == '' ]
-    [ "${lines[2]}" == '' ]
-    [ ${#lines[@]} -eq 3 ]
+  run --keep-empty-lines -- echo -n $'a\n\n'
+  printf "'%s'\n" "${lines[@]}"
+  [ "${lines[0]}" == a ]
+  [ "${lines[1]}" == '' ]
+  [ "${lines[2]}" == '' ]
+  [ ${#lines[@]} -eq 3 ]
 }
 
 @test "run --keep-empty-lines preserves non-empty trailing line" {
-    run --keep-empty-lines -- echo -n $'a\nb'
-    printf "'%s'\n" "${lines[@]}"
-    [ "${lines[0]}" == a ]
-    [ "${lines[1]}" == b ]
-    [ ${#lines[@]} -eq 2 ]
+  run --keep-empty-lines -- echo -n $'a\nb'
+  printf "'%s'\n" "${lines[@]}"
+  [ "${lines[0]}" == a ]
+  [ "${lines[1]}" == b ]
+  [ ${#lines[@]} -eq 2 ]
 }
 
 @test "--keep-empty-lines has zero lines for empty output (see #573)" {
-    run --keep-empty-lines true
-    printf "'%s'\n" "${lines[@]}"
-    [ ${#lines[@]} -eq 0 ]
+  run --keep-empty-lines true
+  printf "'%s'\n" "${lines[@]}"
+  [ ${#lines[@]} -eq 0 ]
 }
 
 print-stderr-stdout() {
-    printf stdout
-    printf stderr >&2
+  printf stdout
+  printf stderr >&2
 }
 
 @test "run --separate-stderr splits output" {
-    local stderr stderr_lines # silence shellcheck
-    run --separate-stderr -- print-stderr-stdout
-    echo "output='$output' stderr='$stderr'"
-    [ "$output" = stdout ]
-    [ ${#lines[@]} -eq 1 ]
+  local stderr stderr_lines # silence shellcheck
+  run --separate-stderr -- print-stderr-stdout
+  echo "output='$output' stderr='$stderr'"
+  [ "$output" = stdout ]
+  [ ${#lines[@]} -eq 1 ]
 
-    [ "$stderr" = stderr ]
-    [ ${#stderr_lines[@]} -eq 1 ]
+  [ "$stderr" = stderr ]
+  [ ${#stderr_lines[@]} -eq 1 ]
 }
 
 @test "run does not change set flags" {
-    old_flags="$-"
-    run true
-    echo -- "$-" == "$old_flags"
-    [ "$-" == "$old_flags" ]
+  old_flags="$-"
+  run true
+  echo -- "$-" == "$old_flags"
+  [ "$-" == "$old_flags" ]
 }
 
 # Positive assertions: each of these should succeed
 @test "basic return-code checking" {
-  run      true
-  run -0   true
-  run '!'  false
-  run -1   false
-  run -3   exit 3
-  run -5   exit 5
+  run true
+  run -0 true
+  run '!' false
+  run -1 false
+  run -3 exit 3
+  run -5 exit 5
   run -111 exit 111
   run -255 exit 255
   run -127 /no/such/command
 }
 
 @test "run exit code check output " {
-  run ! bats --tap "${FIXTURE_ROOT}/failing.bats"
+  reentrant_run ! bats --tap "${FIXTURE_ROOT}/failing.bats"
   echo "$output"
   [ "${lines[0]}" == 1..5 ]
   [ "${lines[1]}" == "not ok 1 run -0 false" ]
@@ -108,7 +108,7 @@ print-stderr-stdout() {
 }
 
 @test "run invalid exit code check error message" {
-  run ! bats --tap "${FIXTURE_ROOT}/invalid.bats"
+  reentrant_run ! bats --tap "${FIXTURE_ROOT}/invalid.bats"
   echo "$output"
   [ "${lines[0]}" == 1..2 ]
   [ "${lines[1]}" == "not ok 1 run '-4evah' echo hi" ]
@@ -119,4 +119,22 @@ print-stderr-stdout() {
   [ "${lines[6]}" == "# (in test file ${RELATIVE_FIXTURE_ROOT}/invalid.bats, line 6)" ]
   [ "${lines[7]}" == "#   \`run -256 echo hi' failed" ]
   [ "${lines[8]}" == "# Usage error: run: '-NNN': NNN must be <= 255 (got: 256)" ]
+}
+
+@test "run is not affected by IFS" {
+  IFS=_
+  run true
+  [ "$status" -eq 0 ]
+  IFS=0
+  run true
+  [ "$status" -eq 0 ]
+}
+
+@test "run does not change IFS" {
+  local IFS=_
+  run true
+  [ "$IFS" = _ ]
+  unset IFS
+  run true
+  [ "${IFS-(unset)}" = '(unset)' ]
 }

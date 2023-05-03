@@ -3,6 +3,7 @@
 # * Arguments
 ARG \
     BUILD_DATE="${BUILD_DATE}" \
+    CMAKE_VERSION="${CMAKE_VERSION}" \
     FOSSIL_VERSION="${FOSSIL_VERSION}" \
     UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
     UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
@@ -54,7 +55,7 @@ COPY builds /builds
 COPY VERSIONS /VERSIONS
 
 # * Add
-ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.18.tar.gz /tmp/fossil-linux.tar.gz
+ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.21.tar.gz /tmp/fossil-linux.tar.gz
 
 # * Run
 # hadolint ignore=DL3008,DL3003
@@ -102,7 +103,7 @@ RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
                tzdata \
                wget \
                zlib1g-dev \
-    && pip3 install --no-cache-dir "cmake==3.17.2" \
+    && pip3 install --no-cache-dir "cmake==3.26.1" \
     && locale-gen "en_US.UTF-8" \
     && update-locale LANG="en_US.UTF-8" \
     && update-locale LC_ALL="en_US.UTF-8" \
