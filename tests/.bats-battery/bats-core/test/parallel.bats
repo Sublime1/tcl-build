@@ -18,15 +18,15 @@ check_parallel_tests() { # <expected maximum parallelity>
   started_tests=0
   read_lines=0
   while IFS= read -r line; do
-    (( ++read_lines ))
+    ((++read_lines))
     case "$line" in
-      "start "*)
-        if (( ++started_tests > max_parallel_tests )); then
-          max_parallel_tests="$started_tests"
-        fi
+    "start "*)
+      if ((++started_tests > max_parallel_tests)); then
+        max_parallel_tests="$started_tests"
+      fi
       ;;
-      "stop "*)
-        (( started_tests-- ))
+    "stop "*)
+      ((started_tests--))
       ;;
     esac
   done <"$FILE_MARKER"
@@ -45,8 +45,8 @@ check_parallel_tests() { # <expected maximum parallelity>
   FILE_MARKER=$(mktemp "${BATS_RUN_TMPDIR}/file_marker.XXXXXX")
   # shellcheck disable=SC2030
   export PARALLELITY=3
-  run bats --jobs $PARALLELITY "$FIXTURE_ROOT/parallel.bats"
-  
+  reentrant_run bats --jobs $PARALLELITY "$FIXTURE_ROOT/parallel.bats"
+
   [ "$status" -eq 0 ]
   # Make sure the lines are in-order.
   [[ "${lines[0]}" == "1..3" ]]
@@ -59,7 +59,7 @@ check_parallel_tests() { # <expected maximum parallelity>
 
 @test "parallel can preserve environment variables" {
   export TEST_ENV_VARIABLE='test-value'
-  run bats --jobs 2 "$FIXTURE_ROOT/parallel-preserve-environment.bats"
+  reentrant_run bats --jobs 2 "$FIXTURE_ROOT/parallel-preserve-environment.bats"
   echo "$output"
   [[ "$status" -eq 0 ]]
 }
@@ -74,8 +74,8 @@ check_parallel_tests() { # <expected maximum parallelity>
 
   # file parallelization is needed for maximum parallelity!
   # If we got over the skip (if no GNU parallel) in setup() we can reenable it safely!
-  unset BATS_NO_PARALLELIZE_ACROSS_FILES 
-  run bash -c "bats --jobs $PARALLELITY \"${FIXTURE_ROOT}/suite/\" 2> >(grep -v '^parallel: Warning: ')"
+  unset BATS_NO_PARALLELIZE_ACROSS_FILES
+  reentrant_run bash -c "bats --jobs $PARALLELITY \"${FIXTURE_ROOT}/suite/\" 2> >(grep -v '^parallel: Warning: ')"
 
   echo "$output"
   [ "$status" -eq 0 ]
@@ -102,11 +102,14 @@ check_parallel_tests() { # <expected maximum parallelity>
 
   # file parallelization is needed for this test!
   # If we got over the skip (if no GNU parallel) in setup() we can reenable it safely!
-  unset BATS_NO_PARALLELIZE_ACROSS_FILES 
+  unset BATS_NO_PARALLELIZE_ACROSS_FILES
   # run 4 files with parallelity of 2 -> serialize 2
-  run bats --jobs $PARALLELITY "$FIXTURE_ROOT/setup_file"
+  reentrant_run bats --jobs $PARALLELITY "$FIXTURE_ROOT/setup_file"
 
-  [[ $status -eq 0 ]] || (echo "$output"; false)
+  [[ $status -eq 0 ]] || (
+    echo "$output"
+    false
+  )
 
   cat "$FILE_MARKER"
 
@@ -117,7 +120,7 @@ check_parallel_tests() { # <expected maximum parallelity>
 }
 
 @test "running the same file twice runs its tests twice without errors" {
-  run bats --jobs 2 "$FIXTURE_ROOT/../bats/passing.bats" "$FIXTURE_ROOT/../bats/passing.bats"
+  reentrant_run bats --jobs 2 "$FIXTURE_ROOT/../bats/passing.bats" "$FIXTURE_ROOT/../bats/passing.bats"
   echo "$output"
   [[ $status -eq 0 ]]
   [[ "${lines[0]}" == "1..2" ]] # got 2x1 tests
@@ -132,20 +135,20 @@ check_parallel_tests() { # <expected maximum parallelity>
   bats --jobs $PARALLELITY "$FIXTURE_ROOT/parallel_factor.bats"
   local current_parallel_count=0 maximum_parallel_count=0 total_count=0
   while read -r line; do
-    case "$line" in 
-      setup*)
-        ((++current_parallel_count))
-        ((++total_count))
+    case "$line" in
+    setup*)
+      ((++current_parallel_count))
+      ((++total_count))
       ;;
-      teardown*)
-        ((current_parallel_count--))
-      ;; 
+    teardown*)
+      ((current_parallel_count--))
+      ;;
     esac
-    if (( current_parallel_count > maximum_parallel_count )); then
+    if ((current_parallel_count > maximum_parallel_count)); then
       maximum_parallel_count=$current_parallel_count
     fi
-  done < "$MARKER_FILE"
-  
+  done <"$MARKER_FILE"
+
   cat "$MARKER_FILE" # for debugging purposes
   [[ "$maximum_parallel_count" -eq $PARALLELITY ]]
   [[ "$current_parallel_count" -eq 0 ]]
@@ -153,7 +156,7 @@ check_parallel_tests() { # <expected maximum parallelity>
 }
 
 @test "parallel mode correctly forwards failure return code" {
-  run bats --jobs 2 "$FIXTURE_ROOT/../bats/failing.bats"
+  reentrant_run bats --jobs 2 "$FIXTURE_ROOT/../bats/failing.bats"
   [[ "$status" -eq 1 ]]
 }
 
@@ -162,7 +165,7 @@ check_parallel_tests() { # <expected maximum parallelity>
   # (setup should have skipped already, if there was no GNU parallel)
   unset BATS_NO_PARALLELIZE_ACROSS_FILES
   FILE_MARKER=$(mktemp "${BATS_RUN_TMPDIR}/file_marker.XXXXXX") \
-    run ! bats --jobs 2 "$FIXTURE_ROOT/must_not_parallelize_across_files/"
+    reentrant_run ! bats --jobs 2 "$FIXTURE_ROOT/must_not_parallelize_across_files/"
 }
 
 @test "--no-parallelize-across-files prevents parallelization across files" {
@@ -171,11 +174,11 @@ check_parallel_tests() { # <expected maximum parallelity>
 }
 
 @test "--no-parallelize-across-files does not prevent parallelization within files" {
-  run ! bats --jobs 2 --no-parallelize-across-files "$FIXTURE_ROOT/must_not_parallelize_within_file.bats"
+  reentrant_run ! bats --jobs 2 --no-parallelize-across-files "$FIXTURE_ROOT/must_not_parallelize_within_file.bats"
 }
 
 @test "--no-parallelize-within-files test file detects parallel execution" {
-  run ! bats --jobs 2 "$FIXTURE_ROOT/must_not_parallelize_within_file.bats"
+  reentrant_run ! bats --jobs 2 "$FIXTURE_ROOT/must_not_parallelize_within_file.bats"
 }
 
 @test "--no-parallelize-within-files prevents parallelization within files" {
@@ -187,7 +190,7 @@ check_parallel_tests() { # <expected maximum parallelity>
   # (setup should have skipped already, if there was no GNU parallel)
   unset BATS_NO_PARALLELIZE_ACROSS_FILES
   FILEMARKER=$(mktemp "${BATS_RUN_TMPDIR}/file_marker.XXXXXX") \
-    run ! bats --jobs 2 --no-parallelize-within-files "$FIXTURE_ROOT/must_not_parallelize_across_files/"
+    reentrant_run ! bats --jobs 2 --no-parallelize-within-files "$FIXTURE_ROOT/must_not_parallelize_across_files/"
 }
 
 @test "BATS_NO_PARALLELIZE_WITHIN_FILE works from inside setup_file()" {
@@ -199,9 +202,9 @@ check_parallel_tests() { # <expected maximum parallelity>
 }
 
 @test "BATS_NO_PARALLELIZE_WITHIN_FILE does not work from inside setup()" {
-  DISABLE_IN_SETUP_FUNCTION=1 run ! bats --jobs 2 "$FIXTURE_ROOT/must_not_parallelize_within_file.bats"
+  DISABLE_IN_SETUP_FUNCTION=1 reentrant_run ! bats --jobs 2 "$FIXTURE_ROOT/must_not_parallelize_within_file.bats"
 }
 
 @test "BATS_NO_PARALLELIZE_WITHIN_FILE does not work from inside test function" {
-  DISABLE_IN_TEST_FUNCTION=1 run ! bats --jobs 2 "$FIXTURE_ROOT/must_not_parallelize_within_file.bats"
+  DISABLE_IN_TEST_FUNCTION=1 reentrant_run ! bats --jobs 2 "$FIXTURE_ROOT/must_not_parallelize_within_file.bats"
 }

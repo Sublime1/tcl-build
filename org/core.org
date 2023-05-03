@@ -221,7 +221,7 @@ Run the build container in the background with Docker:
 #+begin_example
 mkdir -p $PWD/workspaces
 docker run -itd \
-    -v $PWD/workspaces:/workspaces\
+    -v $PWD/workspaces:/workspaces \
     -v $PWD/builds:/builds \
     --name=tcl-build \
     oupfiz5/tcl-build:22.08
