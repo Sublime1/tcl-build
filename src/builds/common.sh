@@ -17,11 +17,17 @@ build_git_clone () {
     local name="$1"
     local repo="$2"
     local extra="$3"
+
     if [ ! -d "/workspaces/$name" ]; then
         echo "No git clone of $name found".
         cd /workspaces || exit 1
-        echo git clone "$extra" "$repo"
-        git clone "${extra}" "$repo"
+        echo "pwd=$(pwd)"
+        echo "Name=${name}"
+        echo "Repo=${repo}"
+        echo "Extra=${extra}"
+        echo "Command is: git clone ${extra} ${repo} ${name}"
+        # shellcheck disable=SC2086
+        git clone ${extra} ${repo} ${name}
     fi
 }
 
