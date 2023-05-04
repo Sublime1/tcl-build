@@ -49,7 +49,6 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 - [[#maintenance][Maintenance]]
   - [[#log-output][Log output]]
   - [[#shell-access][Shell access]]
-- [[#changelogmd][../CHANGELOG.md]]
 
 * Prerequisite
 :PROPERTIES:
@@ -286,7 +285,7 @@ docker run -it --rm \
 #+begin_example
 docker exec -it tcl-build /bin/bash
 #+end_example
-* ../CHANGELOG.md
+* ../CHANGELOG.md :noexport:
 #+begin_src md :tangle ../CHANGELOG.md
 # Changelog
 ## 23.05 - 2023-05-03
