@@ -1,3 +1,4 @@
+
 # Table of Contents
 
 -   [About](#about)
@@ -24,6 +25,7 @@
 -   [Maintenance](#maintenance)
     -   [Log output](#log-output)
     -   [Shell access](#shell-access)
+-   [../CHANGELOG.md](#org31ed437)
 
 
 
@@ -31,7 +33,7 @@
 
 # About
 
-This is [ubuntu base docker image](https://hub.docker.com/_/ubuntu) (version 20.04) using [s6-overlay](https://github.com/just-containers/s6-overlay) for buid tcl software. The basic idea was taken from [tcl2020-build](https://github.com/tcl2020/tcl2020-build) .
+This is [ubuntu base docker image](https://hub.docker.com/_/ubuntu) (version 22.04) using [s6-overlay](https://github.com/just-containers/s6-overlay) for buid tcl software. The basic idea was taken from [tcl2020-build](https://github.com/tcl2020/tcl2020-build) .
 
 Tcl-build is self-hosting at <https://chiselapp.com/user/oupfiz5/repository/tcl-build>.
 
@@ -77,7 +79,7 @@ They are using for testing and scanning:
 ## Download from dockerhub
 
     docker pull oupfiz5/tcl-build:latest
-    docker pull oupfiz5/tcl-build:21.07
+    docker pull oupfiz5/tcl-build:23.03
 
 
 <a id="build-from-chiselapp--fossil-"></a>
@@ -138,7 +140,7 @@ They are using for testing and scanning:
 <tbody>
 <tr>
 <td class="org-left">FOSSIL_VERSION</td>
-<td class="org-left">2.17</td>
+<td class="org-left">2.21</td>
 <td class="org-left">Set upload fossil version</td>
 </tr>
 </tbody>
@@ -159,10 +161,10 @@ They are using for testing and scanning:
 
     docker build \
            --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-           --build-arg VERSION='22.01' \
-           --build-arg FOSSIL_VERSION='2.17' \
-           -t oupfiz5/tcl-build:22.01 \
-           -f ./Dockerfile \
+           --build-arg VERSION='23.03' \
+           --build-arg FOSSIL_VERSION='2.21' \
+           --tag oupfiz5/tcl-build:23.05 \
+           --file ./Dockerfile \
             .
 
 
@@ -211,10 +213,10 @@ For configuration is using environment variables.
 
 Set the timezone for the container, defaults to UTC. To set the timezone set the desired timezone with the variable TZ.
 
-    mkdir -p $PWD/workspaces
+    mkdir -p $pwd/workspaces
     docker run -itd \
-        -v $PWD/workspaces:/workspaces\
-        -v $PWD/builds:/builds \
+        -v $pwd/workspaces:/workspaces\
+        -v $(pwd)/builds:/builds \
         --env 'TZ=Europe/Moscow' \
         --name=tcl-build \
         oupfiz5/tcl-build:latest
@@ -269,7 +271,7 @@ For configuration is using docker environment variable and/or `builds/env-vars.s
 <tbody>
 <tr>
 <td class="org-left">NS_VERSION</td>
-<td class="org-right">4.99.21</td>
+<td class="org-right">4.99.24</td>
 <td class="org-left">Define NaviServer version</td>
 </tr>
 </tbody>
@@ -277,7 +279,7 @@ For configuration is using docker environment variable and/or `builds/env-vars.s
 <tbody>
 <tr>
 <td class="org-left">NS_MODULES_VERSION</td>
-<td class="org-right">4.99.21</td>
+<td class="org-right">4.99.24</td>
 <td class="org-left">Define NaviServer modules version</td>
 </tr>
 </tbody>
@@ -285,7 +287,7 @@ For configuration is using docker environment variable and/or `builds/env-vars.s
 <tbody>
 <tr>
 <td class="org-left">RL_JSON_VERSION</td>
-<td class="org-right">0.11.0</td>
+<td class="org-right">0.12.2</td>
 <td class="org-left">Define <a href="https://github.com/RubyLane/rl_json">RL_JSON</a> version</td>
 </tr>
 </tbody>
@@ -293,7 +295,7 @@ For configuration is using docker environment variable and/or `builds/env-vars.s
 <tbody>
 <tr>
 <td class="org-left">TCL_VERSION</td>
-<td class="org-right">8.6.11</td>
+<td class="org-right">8.6.13</td>
 <td class="org-left">Define tcl version</td>
 </tr>
 </tbody>
@@ -317,7 +319,7 @@ For configuration is using docker environment variable and/or `builds/env-vars.s
 <tbody>
 <tr>
 <td class="org-left">XOTCL_VERSION</td>
-<td class="org-right">2.3.0</td>
+<td class="org-right">2.4.0</td>
 <td class="org-left">Define xotcl version</td>
 </tr>
 </tbody>
@@ -335,12 +337,12 @@ For configuration is using docker environment variable and/or `builds/env-vars.s
 
 Run the build container in the background with Docker:
 
-    mkdir -p $PWD/workspaces
+    mkdir -p $pwd/workspaces
     docker run -itd \
-        -v $PWD/workspaces:/workspaces\
-        -v $PWD/builds:/builds \
+        -v $pwd/workspaces:/workspaces \
+        -v $pwd/builds:/builds \
         --name=tcl-build \
-        oupfiz5/tcl-build:22.01
+        oupfiz5/tcl-build:23.05
 
 
 <a id="build-applications"></a>
@@ -354,9 +356,9 @@ Build all program in tcl-build using a `docker exec` and default congratulations
 Build any applications with version customization in tcl-build using `docker exec`. For example install tcl version 8.6.11 is:
 
     docker exec -it \
-           -e TCL_VERSION=8.6.11 \
-           tcl-build \
-           bash /builds/tcl-build.sh
+        -e TCL_VERSION=8.6.13 \
+        tcl-build \
+        bash /builds/tcl-build.sh
 
 Modify the source code of any package in the workspaces directory. Then you can use make, cmake, &#x2026; to rebuild the container with the changes.  Use the build container with your favorite IDE.
 
@@ -401,3 +403,24 @@ For debugging and maintenance purposes you may want access the output log. If yo
 For debugging and maintenance purposes you may want access the containers shell. If you are usingDocker version 1.3.0 or higher you can access a running containers shell by starting bash using docker exec:
 
     docker exec -it tcl-build /bin/bash
+
+
+<a id="org31ed437"></a>
+
+# ../CHANGELOG.md
+
+    # Changelog
+    ## 23.05 - 2023-05-03
+    
+    ### Added
+    - image tag `latest` for docker image
+    
+    ### Changed
+    - used new base docker image ([oupfiz5/ubuntu-s6:22.04-3.1.4.2](https://hub.docker.com/layers/oupfiz5/ubuntu-s6/22.04-3.1.4.2/images/sha256-3374d789ac3295add644bb97915738d17149b6e003c8189201c688583cfdd80e?context=repo))
+    - upgrade tcl version to version 8.6.13
+    - downgrade tcllib to version 1.20
+    - upgrade thread to version 2.8.8
+    - install `rl_json` using download source from github
+    - `hook/push.sh` push docker image with tag `latest`
+    - github pipeline will use ``runs-on: ubuntu-22.04`
+
