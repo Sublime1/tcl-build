@@ -78,7 +78,7 @@ They are using for testing and scanning:
 ## Download from dockerhub
 
     docker pull oupfiz5/tcl-build:latest
-    docker pull oupfiz5/tcl-build:23.03
+    docker pull oupfiz5/tcl-build:23.05
 
 
 <a id="build-from-chiselapp--fossil-"></a>
@@ -160,7 +160,7 @@ They are using for testing and scanning:
 
     docker build \
            --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-           --build-arg VERSION='23.03' \
+           --build-arg VERSION='23.05' \
            --build-arg FOSSIL_VERSION='2.21' \
            --tag oupfiz5/tcl-build:23.05 \
            --file ./Dockerfile \
@@ -212,13 +212,13 @@ For configuration is using environment variables.
 
 Set the timezone for the container, defaults to UTC. To set the timezone set the desired timezone with the variable TZ.
 
-    mkdir -p $pwd/workspaces
+    mkdir -p $(pwd)/workspaces
     docker run -itd \
-        -v $pwd/workspaces:/workspaces\
+        -v $(pwd)/workspaces:/workspaces\
         -v $(pwd)/builds:/builds \
         --env 'TZ=Europe/Moscow' \
         --name=tcl-build \
-        oupfiz5/tcl-build:latest
+        oupfiz5/tcl-build:23.05
 
 
 <a id="applications"></a>
@@ -336,10 +336,10 @@ For configuration is using docker environment variable and/or `builds/env-vars.s
 
 Run the build container in the background with Docker:
 
-    mkdir -p $pwd/workspaces
+    mkdir -p $(pwd)/workspaces
     docker run -itd \
-        -v $pwd/workspaces:/workspaces \
-        -v $pwd/builds:/builds \
+        -v $(pwd)/workspaces:/workspaces \
+        -v $(pwd)/builds:/builds \
         --name=tcl-build \
         oupfiz5/tcl-build:23.05
 
