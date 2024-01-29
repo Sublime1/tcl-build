@@ -10,7 +10,8 @@
 
   package_directory="naviserver-${NS_VERSION}"
   if [ ! -d /workspaces/"${package_directory}" ]; then
-      cd /workspaces && sh /builds/ns-download.sh
+      #cd /workspaces && sh /builds/ns-download.sh
+      cd /workspaces && cp /builds/naviserver-4.99.30b1.tar.gz .
       tar zxvf naviserver-"${NS_VERSION}".tar.gz
   fi
 
