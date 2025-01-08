@@ -57,6 +57,9 @@ COPY VERSIONS /VERSIONS
 # * Add
 ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.23.tar.gz /tmp/fossil-linux.tar.gz
 
+ARG \
+    CMAKE_VERSION="${CMAKE_VERSION}" 
+
 # * Run
 # hadolint ignore=DL3008,DL3003
 RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
@@ -95,15 +98,17 @@ RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
                make \
                minizip \
                openssl \
+               pipx \
                pkg-config \
                postgresql-client \
                python3-pip \
                python3-venv \
-               swig3.0 \
+               swig \
                tzdata \
                wget \
                zlib1g-dev \
-    && pip3 install --no-cache-dir "cmake==3.26.1" \
+    && pipx ensurepath \
+    && pipx install "cmake==${CMAKE_VERSION}" \
     && locale-gen "en_US.UTF-8" \
     && update-locale LANG="en_US.UTF-8" \
     && update-locale LC_ALL="en_US.UTF-8" \

@@ -12,7 +12,14 @@ docker buildx build \
     --build-arg UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
     --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
     --build-arg FOSSIL_VERSION="${FOSSIL_VERSION:-2.21}" \
+    --build-arg CMAKE_VERSION="${CMAKE_VERSION}" \
     --tag "${IMAGE}" \
     --tag "${IMAGE_LATEST}" \
     --file ../"${DOCKERFILE}" \
     ../.
+
+# Let everyone know we are finished!
+for i in {1..10}; do
+    echo -e "\a"
+    sleep 0.5   
+done
