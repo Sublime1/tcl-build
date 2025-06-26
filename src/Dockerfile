@@ -54,11 +54,9 @@ LABEL \
 COPY builds /builds
 COPY VERSIONS /VERSIONS
 
-# * Add
-ADD https://www.fossil-scm.org/home/uv/fossil-linux-x64-2.23.tar.gz /tmp/fossil-linux.tar.gz
-
 ARG \
-    CMAKE_VERSION="${CMAKE_VERSION}" 
+    CMAKE_VERSION="${CMAKE_VERSION}" \
+    FOSSIL_VERSION="${FOSSIL_VERSION}"
 
 # * Run
 # hadolint ignore=DL3008,DL3003
@@ -113,10 +111,11 @@ RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
     && update-locale LANG="en_US.UTF-8" \
     && update-locale LC_ALL="en_US.UTF-8" \
     && cd /tmp \
+    && wget -O /tmp/fossil-linux.tar.gz https://www.fossil-scm.org/home/uv/fossil-linux-x64-${FOSSIL_VERSION}.tar.gz \
     && tar xzf /tmp/fossil-linux.tar.gz -C /usr/bin \
     && rm /tmp/fossil-linux.tar.gz \
     && apt-get clean \
-    && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/*
+    && rm -rf /tmp/* /var/lib/apt/lists/*
 
 # * Entrypoint
 ENTRYPOINT ["/init"]
