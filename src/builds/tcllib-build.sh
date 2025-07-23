@@ -11,7 +11,7 @@
   package_directory="tcllib-${TCLLIB_VERSION}"
   if [ ! -d /workspaces/"${package_directory}" ]; then
       cd /workspaces && sh /builds/tcllib-download.sh
-      tar xvfj tcllib-"${TCLLIB_VERSION}".tar.bz2
+      tar xvfz tcllib-"${TCLLIB_VERSION}".tar.gz
   fi
 
   mkdir -p /workspaces/logs
@@ -19,6 +19,7 @@
   cd /workspaces/"${package_directory}" || exit1
   echo "Building tcllib"
   : > /workspaces/logs/"${package_directory}".log
+  echo "### VERIFYING PREFIX ### The value of PREFIX is: '${PREFIX}'"
   ./configure --prefix="${PREFIX}" 2>&1 | tee -a /workspaces/logs/"${package_directory}".log
   # cut down on the output to stdout to make Travis-CI consoles faster
   make install 2>&1 | tee -a /workspaces/logs/"${package_directory}".log | cut -c1-64

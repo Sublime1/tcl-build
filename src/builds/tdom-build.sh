@@ -8,7 +8,7 @@
 
   build_setup
 
-    package_directory=tdom-"${TDOM_VERSION}"
+    package_directory=tdom-"${TDOM_VERSION}-src"
 
     if [ ! -d /workspaces/"${package_directory}" ]; then
         cd /workspaces && sh /builds/tdom-download.sh

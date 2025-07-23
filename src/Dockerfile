@@ -64,8 +64,6 @@ RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
     && apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
-               apache2 \
-               apache2-dev \
                apt-utils \
                autoconf \
                automake \
@@ -98,7 +96,6 @@ RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
                openssl \
                pipx \
                pkg-config \
-               postgresql-client \
                python3-pip \
                python3-venv \
                swig \
@@ -113,9 +110,21 @@ RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
     && cd /tmp \
     && wget -O /tmp/fossil-linux.tar.gz https://www.fossil-scm.org/home/uv/fossil-linux-x64-${FOSSIL_VERSION}.tar.gz \
     && tar xzf /tmp/fossil-linux.tar.gz -C /usr/bin \
-    && rm /tmp/fossil-linux.tar.gz \
+    # Purge all the build-time packages we used.
+    # --auto-remove will also remove their dependencies.
+    && apt-get purge -y --auto-remove \
+               apt-utils \
+               curl \
+               gdb \
+               gnupg \
+               libboost-all-dev \
+               lsb-release \
+               minizip \
+               pipx  \
+               python3-pip \
+               python3-venv \
     && apt-get clean \
     && rm -rf /tmp/* /var/lib/apt/lists/*
 
-# * Entrypoint
+# * Entrypoint 
 ENTRYPOINT ["/init"]
