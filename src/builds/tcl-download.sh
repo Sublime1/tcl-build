@@ -1,7 +1,16 @@
 #!/bin/bash
-if [ ! -f tcl"${TCL_VERSION}"-src.tar.gz ] ; then
-    echo wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/tcl/tcl"${TCL_VERSION}"-src.tar.gz 2>&1
-    wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/tcl/tcl"${TCL_VERSION}"-src.tar.gz 2>&1
+set -euo pipefail
+TARBALL="tcl${TCL_VERSION}-src.tar.gz"
+if [ ! -f "$TARBALL" ]; then
+    echo wget "${WGET_OPTIONS}" https://downloads.sourceforge.net/sourceforge/tcl/$TARBALL 2>&1
+    if wget ${WGET_OPTIONS} https://downloads.sourceforge.net/sourceforge/tcl/$TARBALL; then
+        echo "[tcl-download.sh] Downloaded $TARBALL successfully."
+        exit 0
+    else
+        echo "[tcl-download.sh] ERROR: Failed to download $TARBALL" >&2
+        exit 1
+    fi
 else
-    echo "File tcl${TCL_VERSION}-src.tar.gz exist. Skip download." 2>&1
+    echo "[tcl-download.sh] File $TARBALL exists. Skip download."
+    exit 0
 fi

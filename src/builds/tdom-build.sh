@@ -1,6 +1,8 @@
 #!/bin/bash
-  # shellcheck source=../src/builds/common.sh
-  . /builds/common.sh
+set -euo pipefail
+
+# shellcheck source=../src/builds/common.sh
+. /builds/common.sh
   # shellcheck source=../src/builds/env-vars.sh
   . /builds/env-vars.sh
   # shellcheck disable=SC1091
@@ -11,7 +13,7 @@
     package_directory=tdom-"${TDOM_VERSION}-src"
 
     if [ ! -d /workspaces/"${package_directory}" ]; then
-        cd /workspaces && sh /builds/tdom-download.sh
+        cd /workspaces && bash /builds/tdom-download.sh
         tar xvfz tdom-"${TDOM_VERSION}"-src.tgz
     fi
 

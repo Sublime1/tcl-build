@@ -1,6 +1,8 @@
 #!/bin/bash
-  # shellcheck source=../src/builds/common.sh
-  . /builds/common.sh
+set -euo pipefail
+
+# shellcheck source=../src/builds/common.sh
+. /builds/common.sh
   # shellcheck source=../src/builds/env-vars.sh
   . /builds/env-vars.sh
   # shellcheck disable=SC1091
@@ -10,7 +12,7 @@
 
   package_directory="naviserver-${NS_VERSION}"
   if [ ! -d /workspaces/"${package_directory}" ]; then
-      cd /workspaces && sh /builds/ns-download.sh
+      cd /workspaces && bash /builds/ns-download.sh
       tar zxvf naviserver-"${NS_VERSION}".tar.gz
   fi
 

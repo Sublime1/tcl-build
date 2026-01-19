@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 # shellcheck source=../src/builds/common.sh
 . /builds/common.sh
 # shellcheck source=../src/builds/env-vars.sh
@@ -8,27 +10,20 @@
 
 build_setup
 
-# * Get from git repository
 package_directory="rl_json-${RL_JSON_VERSION}"
 repo='https://github.com/RubyLane/rl_json.git'
+# CRITICAL: Must quote "$extra" when passing to build_git_clone to preserve spaces
 extra="--recurse-submodules --shallow-submodules --depth 1 --branch ${RL_JSON_VERSION}"
 
-# shellcheck disable=SC2086
-build_git_clone $package_directory $repo $extra
-
-# Because https://github.com/RubyLane/rl_json/issues/41#
-#if [ ! -d /workspaces/"${package_directory}" ]; then
-#    cd /workspaces && sh /builds/rl_json-download.sh
-#    tar xvfz "${package_directory}".tar.gz
-#fi
+build_git_clone "$package_directory" "$repo" "$extra"
 
 mkdir -p /workspaces/logs
 cd /workspaces/"${package_directory}" || exit 1
-echo "Running the autoconf configure in /workspaces/${package_directory}"
-autoconf || exit 1
-ls -la config*
+
 echo "Building ${package_directory}"
 : > /workspaces/logs/"${package_directory}".log
+
+autoconf || { echo "ERROR: autoconf failed"; exit 1; }
 ./configure --prefix="${PREFIX}" \
     --with-tcl="${PREFIX}"/lib \
     --with-tclinclude="${PREFIX}"/include 2>&1 | tee -a /workspaces/logs/"${package_directory}".log

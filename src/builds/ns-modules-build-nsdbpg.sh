@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 # shellcheck source=../src/builds/common.sh
 . /builds/common.sh
 # shellcheck source=../src/builds/env-vars.sh
@@ -10,7 +12,7 @@ build_setup
 
 package_directory="naviserver-${NS_MODULES_VERSION}-modules"
 if [ ! -d /workspaces/"${package_directory}" ]; then
-    cd /workspaces && sh /builds/ns-modules-download.sh
+    cd /workspaces && bash /builds/ns-modules-download.sh
     tar zxvf naviserver-"${NS_MODULES_VERSION}"-modules.tar.gz --transform s/modules/naviserver-"${NS_MODULES_VERSION}"-modules/
 fi
 
