@@ -60,10 +60,20 @@ ARG \
 
 # * Run
 # hadolint ignore=DL3008,DL3003
-RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
-    && apt-get update \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
+    export LANG="C.UTF-8" && export LC_ALL="C.UTF-8" \
+        && printf '%s\n' \
+             'Acquire::Retries "3";' \
+             'Acquire::http::Timeout "20";' \
+             'Acquire::https::Timeout "20";' \
+             'Acquire::http::Pipeline-Depth "0";' \
+             'Acquire::Queue-Mode "access";' \
+             > /etc/apt/apt.conf.d/99tclbuild-network \
     && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends \
+        && for i in 1 2; do \
+                 apt-get update && apt-get -y install --no-install-recommends --fix-missing \
                apt-utils \
                autoconf \
                automake \
@@ -94,6 +104,7 @@ RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
                make \
                minizip \
                openssl \
+               pandoc \
                pipx \
                pkg-config \
                python3-pip \
@@ -101,14 +112,22 @@ RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
                swig \
                tzdata \
                wget \
-               zlib1g-dev \
+                             zlib1g-dev \
+                 && break; \
+                 if [ "${i}" -eq 3 ]; then \
+                     echo "apt failed after ${i} attempts"; \
+                     exit 1; \
+                 fi; \
+                 echo "apt failed on attempt ${i}, retrying..."; \
+                 rm -rf /var/lib/apt/lists/*; \
+             done \
     && pipx ensurepath \
     && pipx install "cmake==${CMAKE_VERSION}" \
-    && locale-gen "en_US.UTF-8" \
-    && update-locale LANG="en_US.UTF-8" \
-    && update-locale LC_ALL="en_US.UTF-8" \
+    && sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen \
+    && printf 'LANG=en_US.UTF-8\nLC_ALL=en_US.UTF-8\n' > /etc/default/locale \
     && cd /tmp \
-    && wget -O /tmp/fossil-linux.tar.gz https://www.fossil-scm.org/home/uv/fossil-linux-x64-${FOSSIL_VERSION}.tar.gz \
+    && wget --tries=3 --waitretry=2 --timeout=20 -O /tmp/fossil-linux.tar.gz https://www.fossil-scm.org/home/uv/fossil-linux-x64-${FOSSIL_VERSION}.tar.gz \
     && tar xzf /tmp/fossil-linux.tar.gz -C /usr/bin \
     # Purge all the build-time packages we used.
     # --auto-remove will also remove their dependencies.
@@ -124,7 +143,7 @@ RUN export LANG="en_US.UTF-8" && export LC_ALL="en_US.UTF-8" \
                python3-pip \
                python3-venv \
     && apt-get clean \
-    && rm -rf /tmp/* /var/lib/apt/lists/*
+    && rm -rf /tmp/*
 
 # * Entrypoint 
 ENTRYPOINT ["/init"]
