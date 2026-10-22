@@ -23,6 +23,7 @@ else
 fi
 
 BUILD_ARGS=(
+    --load
     "${CACHE_ARGS[@]}"
     --build-arg UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}"
     --build-arg UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}"
